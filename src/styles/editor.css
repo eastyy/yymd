@@ -193,6 +193,90 @@
   margin: 1em 0;
 }
 
+/* 斜杠菜单 */
+.slash-menu {
+  position: fixed;
+  z-index: 200;
+  display: none;
+  min-width: 230px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 32px var(--shadow);
+  padding: 6px;
+}
+.slash-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  padding: 8px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  text-align: left;
+}
+.slash-item:hover,
+.slash-item.active {
+  background: var(--accent-bg);
+}
+.slash-icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 7px;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.slash-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+.slash-text small {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+/* 选区浮动工具栏 */
+.floating-toolbar {
+  position: fixed;
+  z-index: 200;
+  display: none;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px var(--shadow);
+  padding: 5px 7px;
+}
+.ft-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ft-btn:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
 /* 专注模式:暗化非焦点块 */
 .app.focus .ProseMirror > * {
   opacity: 0.35;
