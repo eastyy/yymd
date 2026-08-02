@@ -16,6 +16,7 @@ interface AppState {
   rootDir: string | null;
   theme: ThemeName;
   focusMode: boolean;
+  searchOpen: boolean;
 
   setFilePath: (p: string | null) => void;
   setDirty: (d: boolean) => void;
@@ -27,6 +28,7 @@ interface AppState {
   setRootDir: (d: string | null) => void;
   setTheme: (t: ThemeName) => void;
   toggleFocusMode: () => void;
+  setSearchOpen: (v: boolean) => void;
   reset: () => void;
 }
 
@@ -42,6 +44,7 @@ export const useAppStore = create<AppState>((set) => ({
   rootDir: null,
   theme: "github",
   focusMode: false,
+  searchOpen: false,
 
   setFilePath: (p) => set({ filePath: p }),
   setDirty: (d) => set({ dirty: d }),
@@ -53,6 +56,7 @@ export const useAppStore = create<AppState>((set) => ({
   setRootDir: (d) => set({ rootDir: d }),
   setTheme: (t) => set({ theme: t }),
   toggleFocusMode: () => set((s) => ({ focusMode: !s.focusMode })),
+  setSearchOpen: (v) => set({ searchOpen: v }),
   reset: () => set({ filePath: null, dirty: false, markdown: "" }),
 }));
 

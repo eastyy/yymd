@@ -7,6 +7,7 @@ import Sidebar from "./components/Sidebar";
 import EditorPane from "./components/EditorPane";
 import SourceEditor from "./components/SourceEditor";
 import StatusBar from "./components/StatusBar";
+import SearchBar from "./components/SearchBar";
 
 interface Settings {
   theme?: "github" | "github-dark";
@@ -18,6 +19,7 @@ export default function App() {
   const theme = useAppStore((s) => s.theme);
   const focusMode = useAppStore((s) => s.focusMode);
   const setTheme = useAppStore((s) => s.setTheme);
+  const searchOpen = useAppStore((s) => s.searchOpen);
 
   // 应用主题
   useEffect(() => {
@@ -78,6 +80,11 @@ export default function App() {
       } else if (key === "n") {
         e.preventDefault();
         newDoc();
+      } else if (key === "f") {
+        if (useAppStore.getState().viewMode === "wysiwyg") {
+          e.preventDefault();
+          useAppStore.getState().setSearchOpen(true);
+        }
       } else if (e.key === "/") {
         e.preventDefault();
         toggleSourceMode();
@@ -91,6 +98,7 @@ export default function App() {
     <div className={`app ${focusMode ? "focus" : ""}`}>
       {sidebarOpen && <Sidebar />}
       <main className="editor-main">
+        {searchOpen && viewMode === "wysiwyg" && <SearchBar />}
         {viewMode === "wysiwyg" ? <EditorPane /> : <SourceEditor />}
       </main>
       <StatusBar />

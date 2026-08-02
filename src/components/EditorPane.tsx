@@ -11,6 +11,7 @@ import { diagram } from "@milkdown/plugin-diagram";
 import { prism } from "@milkdown/plugin-prism";
 import { Milkdown, MilkdownProvider, useEditor } from "@milkdown/react";
 import { imagePlugin } from "../lib/imagePlugin";
+import { searchPlugin } from "../lib/searchPlugin";
 import { useAppStore } from "../store/useAppStore";
 import { setCurrentEditor } from "../lib/editorRef";
 import { syncStats } from "../lib/fileActions";
@@ -33,6 +34,7 @@ function MilkdownInner() {
       .use(diagram)
       .use(prism)
       .use(imagePlugin)
+      .use(searchPlugin)
       .use(listener)
       .config((ctx) => {
         ctx.get(listenerCtx).markdownUpdated((_ctx, md) => {

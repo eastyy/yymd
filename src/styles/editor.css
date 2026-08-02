@@ -193,6 +193,15 @@
   margin: 1em 0;
 }
 
+/* 文档内查找高亮 */
+.ProseMirror .search-hit {
+  background: rgba(250, 204, 21, 0.45);
+  border-radius: 2px;
+}
+.ProseMirror .search-hit-active {
+  background: rgba(249, 115, 22, 0.75);
+}
+
 /* ===== Prism 代码高亮 token ===== */
 .token.comment,
 .token.prolog,
