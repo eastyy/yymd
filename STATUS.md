@@ -30,10 +30,8 @@
 - [x] **5 套主题**:浅色 / 深色 / 护眼纸质(Newsprint) / 夜间 / 悦读(Pixyll),下拉切换 + 持久化
 - [x] **打字机模式**:光标始终垂直居中
 - [x] **真·专注模式**:非当前段落自动变暗
-
-## 🚧 进行中(后台 agent 开发)
-- [ ] 斜杠菜单(`/` 呼出块级插入)
-- [ ] 选区浮动工具栏(选中文字出现格式化按钮)
+- [x] **斜杠菜单**:输入 `/` 弹出块级插入(标题/列表/表格/代码块/分割线等),键盘过滤+导航
+- [x] **选区浮动工具栏**:选中文字出现格式化按钮(粗体/斜体/删除线/行内代码/链接/标题/引用/代码块)
 
 ## 📋 后续路线图
 - [ ] Word / LaTeX 导出(Pandoc 集成)
@@ -48,8 +46,8 @@
 - TypeScript:`tsc --noEmit` ✅ 0 error
 - 单元测试:vitest **25 passed**(大纲解析、字数统计、导出、主题注册表)
 - Rust:`cargo check` ✅
-- 完整构建:`cargo tauri build --debug` ✅(Yymd.app + DMG)
-- 运行时:启动二进制存活、无错误日志 ✅
+- 完整构建:`cargo tauri build --debug` ✅(Yymd.app + DMG,含全部功能)
+- 运行时:启动二进制存活、无错误日志、编辑器(含斜杠菜单/浮动工具栏)初始化正常 ✅
 - Windows 构建:已配置 GitHub Actions(推 `v*` tag 触发)
 
 ## 🏗 架构
@@ -57,6 +55,7 @@
 src/                     React 前端
   components/            EditorPane / SourceEditor / Sidebar / Outline /
                          FileTree / StatusBar / SearchBar / QuickOpen
+  plugins/                 slash-menu / floating-toolbar(vanilla DOM 插件)
   lib/                   fileActions / bridge(Tauri) / outline / stats /
                          imagePlugin / searchPlugin / editModePlugins /
                          export / themes / editorRef / welcome
