@@ -1,0 +1,22 @@
+/* ===== Night 夜间主题(柔和深灰,非纯黑) ===== */
+body[data-theme="night"] {
+  --bg: #1a1a1a;
+  --bg-secondary: #242424;
+  --bg-sidebar: #141414;
+  --text: #d4d4d4;
+  --text-secondary: #9a9a9a;
+  --text-muted: #6f6f6f;
+  --border: #3a3a3a;
+  --border-light: #2c2c2c;
+  --accent: #6cb6ff;
+  --accent-bg: #21323f;
+  --code-bg: #242424;
+  --code-text: #d4d4d4;
+  --blockquote-border: #3a3a3a;
+  --blockquote-text: #9a9a9a;
+  --table-border: #3a3a3a;
+  --table-stripe: #222222;
+  --selection: #2f4a5c;
+  --shadow: rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
+}

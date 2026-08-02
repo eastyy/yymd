@@ -1,0 +1,23 @@
+/* ===== Pixyll 悦读主题(白底、红色点缀,类 Typora Pixyll) ===== */
+/* 说明:大字号/衬线等排版特性依赖 editor.css,本文件仅提供配色变量。 */
+body[data-theme="pixyll"] {
+  --bg: #ffffff;
+  --bg-secondary: #f7f7f7;
+  --bg-sidebar: #fafafa;
+  --text: #2d2d2d;
+  --text-secondary: #5c5c5c;
+  --text-muted: #999999;
+  --border: #e0e0e0;
+  --border-light: #eeeeee;
+  --accent: #d63031;
+  --accent-bg: #fbe9e8;
+  --code-bg: #f5f5f5;
+  --code-text: #333333;
+  --blockquote-border: #e5e5e5;
+  --blockquote-text: #666666;
+  --table-border: #e0e0e0;
+  --table-stripe: #f7f7f7;
+  --selection: #ffd6d4;
+  --shadow: rgba(0, 0, 0, 0.1);
+  color-scheme: light;
+}
