@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { useAppStore, type ThemeName } from "./store/useAppStore";
 import { isTauri, loadSettings, saveSettings } from "./lib/bridge";
-import { newDoc, openDoc, saveDoc, saveAsDoc, toggleSourceMode, syncStats } from "./lib/fileActions";
-import { wrapHtmlDocument, downloadHtml, printToPdf, type ExportTheme } from "./lib/export";
-import { displayName } from "./store/useAppStore";
+import { newDoc, openDoc, saveDoc, saveAsDoc, toggleSourceMode, syncStats, exportCurrent } from "./lib/fileActions";
 import { WELCOME_DOC } from "./lib/welcome";
 import Sidebar from "./components/Sidebar";
 import EditorPane from "./components/EditorPane";
@@ -15,19 +13,6 @@ import QuickOpen from "./components/QuickOpen";
 interface Settings {
   theme?: ThemeName;
   recent?: string[];
-}
-
-function exportCurrent(kind: "html" | "pdf") {
-  const state = useAppStore.getState();
-  const bodyHtml = document.querySelector(".ProseMirror")?.innerHTML ?? "";
-  const title = displayName(state.filePath);
-  const theme: ExportTheme = state.theme === "github-dark" ? "github-dark" : "github";
-  const html = wrapHtmlDocument(bodyHtml, title, theme);
-  if (kind === "html") {
-    downloadHtml(title.replace(/\.(md|markdown|mdown|txt)$/i, "") + ".html", html);
-  } else {
-    printToPdf(html);
-  }
 }
 
 export default function App() {

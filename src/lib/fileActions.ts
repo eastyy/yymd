@@ -3,13 +3,8 @@ import { editorViewCtx } from "@milkdown/core";
 import { useAppStore, displayName } from "../store/useAppStore";
 import { getCurrentEditor } from "./editorRef";
 import { countStats } from "./stats";
-import {
-  isTauri,
-  readFile,
-  writeFile,
-  pickOpenFile,
-  pickSaveFile,
-} from "./bridge";
+import { isTauri, readFile, writeFile, pickOpenFile, pickSaveFile } from "./bridge";
+import { wrapHtmlDocument, downloadHtml, printToPdf, type ExportTheme } from "./export";
 
 function setDocTitle(name: string, dirty: boolean) {
   const title = `${dirty ? "● " : ""}${name} - Yymd`;
@@ -93,6 +88,20 @@ export function scheduleAutoSave(delay = 1500) {
   autoSaveTimer = setTimeout(() => {
     void saveDoc();
   }, delay);
+}
+
+/** 导出当前文档为 HTML / PDF(需在 WYSIWYG 视图) */
+export function exportCurrent(kind: "html" | "pdf") {
+  const state = useAppStore.getState();
+  const bodyHtml = document.querySelector(".ProseMirror")?.innerHTML ?? "";
+  const title = displayName(state.filePath);
+  const theme: ExportTheme = state.theme === "github-dark" || state.theme === "night" ? "github-dark" : "github";
+  const html = wrapHtmlDocument(bodyHtml, title, theme);
+  if (kind === "html") {
+    downloadHtml(title.replace(/\.(md|markdown|mdown|txt)$/i, "") + ".html", html);
+  } else {
+    printToPdf(html);
+  }
 }
 
 export async function toggleSourceMode() {

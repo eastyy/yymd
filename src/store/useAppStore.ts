@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 export type ViewMode = "wysiwyg" | "source";
 export type SidebarTab = "files" | "outline";
-export type ThemeName = "github" | "github-dark" | "night";
+export type ThemeName = "github" | "github-dark" | "newsprint" | "night" | "pixyll";
 
 interface AppState {
   filePath: string | null;

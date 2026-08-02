@@ -1,15 +1,10 @@
 import { useAppStore } from "../store/useAppStore";
-import { toggleSourceMode } from "../lib/fileActions";
-import { saveSettings } from "../lib/bridge";
+import { THEMES } from "../lib/themes";
+import { toggleSourceMode, exportCurrent } from "../lib/fileActions";
 
 export default function StatusBar() {
-  const { wordCount, charCount, dirty, viewMode, setViewMode, theme, setTheme, focusMode, toggleFocusMode, toggleSidebar } =
+  const { wordCount, charCount, dirty, viewMode, theme, setTheme, focusMode, toggleFocusMode, toggleSidebar } =
     useAppStore();
-
-  function changeTheme(t: "github" | "github-dark") {
-    setTheme(t);
-    saveSettings({ theme: t }).catch(() => {});
-  }
 
   return (
     <footer className="statusbar">
@@ -24,6 +19,12 @@ export default function StatusBar() {
         </span>
       </div>
       <div className="statusbar-right">
+        <button className="status-btn" onClick={() => exportCurrent("html")} title="导出 HTML">
+          HTML
+        </button>
+        <button className="status-btn" onClick={() => exportCurrent("pdf")} title="导出 PDF(打印对话框)">
+          PDF
+        </button>
         <button
           className="status-btn"
           onClick={toggleFocusMode}
@@ -32,13 +33,18 @@ export default function StatusBar() {
         >
           🎯
         </button>
-        <button
-          className="status-btn"
-          onClick={() => changeTheme(theme === "github" ? "github-dark" : "github")}
-          title="切换主题"
+        <select
+          className="theme-select"
+          value={theme}
+          onChange={(e) => setTheme(e.target.value as typeof theme)}
+          title="主题"
         >
-          {theme === "github" ? "🌙" : "☀️"}
-        </button>
+          {THEMES.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.name}
+            </option>
+          ))}
+        </select>
         <div className="seg">
           <button
             className={viewMode === "wysiwyg" ? "active" : ""}
