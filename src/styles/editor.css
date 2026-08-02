@@ -1,0 +1,260 @@
+/* ===== 编辑区 ===== */
+.editor-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg);
+}
+.editor-container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 48px 64px 120px;
+}
+
+/* ===== Milkdown / ProseMirror 排版 ===== */
+.milkdown {
+  outline: none;
+}
+.milkdown .editor {
+  outline: none;
+}
+.ProseMirror {
+  outline: none;
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 16px;
+  word-wrap: break-word;
+}
+.ProseMirror:focus {
+  outline: none;
+}
+.ProseMirror ::selection {
+  background: var(--selection);
+}
+
+/* 标题 */
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3,
+.ProseMirror h4,
+.ProseMirror h5,
+.ProseMirror h6 {
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 1.4em 0 0.6em;
+}
+.ProseMirror h1 {
+  font-size: 2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-light);
+}
+.ProseMirror h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-light);
+}
+.ProseMirror h3 {
+  font-size: 1.25em;
+}
+.ProseMirror h4 {
+  font-size: 1em;
+}
+.ProseMirror h5 {
+  font-size: 0.9em;
+}
+.ProseMirror h6 {
+  font-size: 0.85em;
+  color: var(--text-secondary);
+}
+
+/* 段落与行内 */
+.ProseMirror p {
+  margin: 0.7em 0;
+}
+.ProseMirror a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.ProseMirror a:hover {
+  text-decoration: underline;
+}
+.ProseMirror strong {
+  font-weight: 600;
+}
+
+/* 行内代码 */
+.ProseMirror code {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 0.875em;
+}
+
+/* 代码块 */
+.ProseMirror pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+.ProseMirror pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.875em;
+  line-height: 1.6;
+}
+
+/* 引用 */
+.ProseMirror blockquote {
+  margin: 1em 0;
+  padding: 0.2em 1em;
+  border-left: 4px solid var(--blockquote-border);
+  color: var(--blockquote-text);
+}
+.ProseMirror blockquote p {
+  margin: 0.4em 0;
+}
+
+/* 列表 */
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.8em;
+  margin: 0.7em 0;
+}
+.ProseMirror li {
+  margin: 0.25em 0;
+}
+.ProseMirror li p {
+  margin: 0.3em 0;
+}
+
+/* 任务列表 */
+.ProseMirror li.task-list-item {
+  list-style: none;
+  margin-left: -1.4em;
+}
+.ProseMirror li.task-list-item input[type="checkbox"] {
+  margin-right: 0.5em;
+  accent-color: var(--accent);
+}
+
+/* 表格 */
+.ProseMirror table {
+  border-collapse: collapse;
+  margin: 1em 0;
+  width: auto;
+  max-width: 100%;
+  display: block;
+  overflow-x: auto;
+}
+.ProseMirror th,
+.ProseMirror td {
+  border: 1px solid var(--table-border);
+  padding: 8px 14px;
+  min-width: 60px;
+}
+.ProseMirror th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+}
+.ProseMirror tr:nth-child(even) td {
+  background: var(--table-stripe);
+}
+
+/* 分割线 */
+.ProseMirror hr {
+  border: none;
+  border-top: 2px solid var(--border-light);
+  margin: 2em 0;
+}
+
+/* 图片 */
+.ProseMirror img {
+  max-width: 100%;
+  border-radius: 6px;
+  margin: 0.5em 0;
+}
+
+/* 数学公式 */
+.ProseMirror .math-block,
+.ProseMirror .math-display {
+  overflow-x: auto;
+  padding: 0.5em 0;
+  text-align: center;
+}
+
+/* 图表 */
+.ProseMirror .diagram {
+  text-align: center;
+  margin: 1em 0;
+}
+
+/* ===== Prism 代码高亮 token ===== */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: var(--text-muted);
+}
+.token.punctuation {
+  color: var(--text-secondary);
+}
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #cf222e;
+}
+.token.boolean,
+.token.number {
+  color: #0550ae;
+}
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #0a3069;
+}
+.token.operator,
+.token.entity,
+.token.url,
+.token.variable {
+  color: var(--text);
+}
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+  color: #8250df;
+}
+.token.keyword {
+  color: #cf222e;
+}
+.token.regex,
+.token.important {
+  color: #953800;
+}
+body[data-theme="github-dark"] .token.property,
+body[data-theme="github-dark"] .token.tag,
+body[data-theme="github-dark"] .token.keyword {
+  color: #ff7b72;
+}
+body[data-theme="github-dark"] .token.string,
+body[data-theme="github-dark"] .token.selector {
+  color: #a5d6ff;
+}
+body[data-theme="github-dark"] .token.function,
+body[data-theme="github-dark"] .token.class-name {
+  color: #d2a8ff;
+}
+body[data-theme="github-dark"] .token.number,
+body[data-theme="github-dark"] .token.boolean {
+  color: #79c0ff;
+}
