@@ -152,12 +152,14 @@ fn build_menu(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> 
     let open_i = MenuItem::with_id(app, "file.open", "打开…", true, Some("CmdOrCtrl+O"))?;
     let save_i = MenuItem::with_id(app, "file.save", "保存", true, Some("CmdOrCtrl+S"))?;
     let save_as_i = MenuItem::with_id(app, "file.save_as", "另存为…", true, Some("Shift+CmdOrCtrl+S"))?;
+    let export_html_i = MenuItem::with_id(app, "file.export_html", "导出为 HTML", true, None::<&str>)?;
+    let export_pdf_i = MenuItem::with_id(app, "file.export_pdf", "导出为 PDF…", true, None::<&str>)?;
     let quit_i = PredefinedMenuItem::quit(app, Some("退出"))?;
     let file_menu = Submenu::with_items(
         app,
         "文件",
         true,
-        &[&new_i, &open_i, &save_i, &save_as_i, &quit_i],
+        &[&new_i, &open_i, &save_i, &save_as_i, &export_html_i, &export_pdf_i, &quit_i],
     )?;
 
     let undo_i = PredefinedMenuItem::undo(app, Some("撤销"))?;
