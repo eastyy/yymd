@@ -1,0 +1,22 @@
+/* ===== Newsprint 护眼纸质主题(类 Typora Newsprint,暖米黄纸质) ===== */
+body[data-theme="newsprint"] {
+  --bg: #f0ead6;
+  --bg-secondary: #e8e1cb;
+  --bg-sidebar: #e6dfc9;
+  --text: #3b352c;
+  --text-secondary: #6b6353;
+  --text-muted: #8f8776;
+  --border: #d4cbb0;
+  --border-light: #e0d8bf;
+  --accent: #8a5a2b;
+  --accent-bg: #e5d9bf;
+  --code-bg: #e9e2cc;
+  --code-text: #4a4234;
+  --blockquote-border: #cbc2a5;
+  --blockquote-text: #6b6353;
+  --table-border: #d4cbb0;
+  --table-stripe: #e8e1cb;
+  --selection: #d8c9a3;
+  --shadow: rgba(80, 70, 40, 0.12);
+  color-scheme: light;
+}
