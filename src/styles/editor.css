@@ -193,6 +193,15 @@
   margin: 1em 0;
 }
 
+/* 专注模式:暗化非焦点块 */
+.app.focus .ProseMirror > * {
+  opacity: 0.35;
+  transition: opacity 0.15s;
+}
+.app.focus .ProseMirror > .focus-block {
+  opacity: 1;
+}
+
 /* 文档内查找高亮 */
 .ProseMirror .search-hit {
   background: rgba(250, 204, 21, 0.45);

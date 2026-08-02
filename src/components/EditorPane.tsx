@@ -12,6 +12,7 @@ import { prism } from "@milkdown/plugin-prism";
 import { Milkdown, MilkdownProvider, useEditor } from "@milkdown/react";
 import { imagePlugin } from "../lib/imagePlugin";
 import { searchPlugin } from "../lib/searchPlugin";
+import { typewriterPlugin, focusModePlugin } from "../lib/editModePlugins";
 import { useAppStore } from "../store/useAppStore";
 import { setCurrentEditor } from "../lib/editorRef";
 import { syncStats, scheduleAutoSave } from "../lib/fileActions";
@@ -35,6 +36,8 @@ function MilkdownInner() {
       .use(prism)
       .use(imagePlugin)
       .use(searchPlugin)
+      .use(typewriterPlugin)
+      .use(focusModePlugin)
       .use(listener)
       .config((ctx) => {
         ctx.get(listenerCtx).markdownUpdated((_ctx, md) => {

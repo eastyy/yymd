@@ -3,7 +3,7 @@ import { THEMES } from "../lib/themes";
 import { toggleSourceMode, exportCurrent } from "../lib/fileActions";
 
 export default function StatusBar() {
-  const { wordCount, charCount, dirty, viewMode, theme, setTheme, focusMode, toggleFocusMode, toggleSidebar } =
+  const { wordCount, charCount, dirty, viewMode, theme, setTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriter, toggleSidebar } =
     useAppStore();
 
   return (
@@ -28,10 +28,18 @@ export default function StatusBar() {
         <button
           className="status-btn"
           onClick={toggleFocusMode}
-          title="专注模式"
+          title="专注模式:高亮当前段落"
           data-active={focusMode}
         >
           🎯
+        </button>
+        <button
+          className="status-btn"
+          onClick={toggleTypewriter}
+          title="打字机模式:光标居中"
+          data-active={typewriterMode}
+        >
+          ⌨
         </button>
         <select
           className="theme-select"

@@ -16,6 +16,7 @@ interface AppState {
   rootDir: string | null;
   theme: ThemeName;
   focusMode: boolean;
+  typewriterMode: boolean;
   searchOpen: boolean;
   quickOpenOpen: boolean;
   recentFiles: string[];
@@ -30,6 +31,7 @@ interface AppState {
   setRootDir: (d: string | null) => void;
   setTheme: (t: ThemeName) => void;
   toggleFocusMode: () => void;
+  toggleTypewriter: () => void;
   setSearchOpen: (v: boolean) => void;
   setQuickOpenOpen: (v: boolean) => void;
   setRecentFiles: (files: string[]) => void;
@@ -49,6 +51,7 @@ export const useAppStore = create<AppState>((set) => ({
   rootDir: null,
   theme: "github",
   focusMode: false,
+  typewriterMode: false,
   searchOpen: false,
   quickOpenOpen: false,
   recentFiles: [],
@@ -63,6 +66,7 @@ export const useAppStore = create<AppState>((set) => ({
   setRootDir: (d) => set({ rootDir: d }),
   setTheme: (t) => set({ theme: t }),
   toggleFocusMode: () => set((s) => ({ focusMode: !s.focusMode })),
+  toggleTypewriter: () => set((s) => ({ typewriterMode: !s.typewriterMode })),
   setSearchOpen: (v) => set({ searchOpen: v }),
   setQuickOpenOpen: (v) => set({ quickOpenOpen: v }),
   setRecentFiles: (files) => set({ recentFiles: files }),
