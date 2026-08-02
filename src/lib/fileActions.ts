@@ -83,6 +83,17 @@ export async function saveAsDoc(): Promise<void> {
   setDocTitle(displayName(path), false);
 }
 
+let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** 防抖自动保存(仅在已存在文件路径时生效) */
+export function scheduleAutoSave(delay = 1500) {
+  if (!useAppStore.getState().filePath) return;
+  if (autoSaveTimer) clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    void saveDoc();
+  }, delay);
+}
+
 export async function toggleSourceMode() {
   const s = useAppStore.getState();
   if (s.viewMode === "wysiwyg") {

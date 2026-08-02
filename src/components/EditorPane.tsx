@@ -14,7 +14,7 @@ import { imagePlugin } from "../lib/imagePlugin";
 import { searchPlugin } from "../lib/searchPlugin";
 import { useAppStore } from "../store/useAppStore";
 import { setCurrentEditor } from "../lib/editorRef";
-import { syncStats } from "../lib/fileActions";
+import { syncStats, scheduleAutoSave } from "../lib/fileActions";
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -41,6 +41,7 @@ function MilkdownInner() {
           const s = useAppStore.getState();
           s.setMarkdown(md);
           s.setDirty(true);
+          scheduleAutoSave();
           if (debounceTimer) clearTimeout(debounceTimer);
           debounceTimer = setTimeout(() => syncStats(md), 300);
         });

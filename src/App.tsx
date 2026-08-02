@@ -64,6 +64,33 @@ export default function App() {
     };
   }, []);
 
+  // 关闭前确认保存
+  useEffect(() => {
+    if (!isTauri) return;
+    let unlisten: (() => void) | null = null;
+    import("@tauri-apps/api/window").then(async ({ getCurrentWindow }) => {
+      const win = getCurrentWindow();
+      unlisten = await win.onCloseRequested(async (event) => {
+        if (!useAppStore.getState().dirty) return;
+        event.preventDefault();
+        const { ask } = await import("@tauri-apps/plugin-dialog");
+        const shouldSave = await ask("有未保存的更改,退出前是否保存?", {
+          title: "Yymd",
+          kind: "warning",
+          okLabel: "保存并退出",
+          cancelLabel: "取消",
+        });
+        if (shouldSave) {
+          await saveDoc();
+          await win.destroy();
+        }
+      });
+    });
+    return () => {
+      if (unlisten) unlisten();
+    };
+  }, []);
+
   // 全局快捷键
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
