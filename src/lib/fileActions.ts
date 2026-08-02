@@ -45,6 +45,7 @@ export async function openFile(path: string) {
   const ed = getCurrentEditor();
   if (ed) ed.action(replaceAll(content));
   syncStats(content);
+  useAppStore.getState().addRecent(path);
   setDocTitle(displayName(path), false);
 }
 

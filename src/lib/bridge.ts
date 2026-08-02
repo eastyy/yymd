@@ -1,5 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
-import { convertFileSrc } from "@tauri-apps/api/core";
+import { invoke, convertFileSrc } from "@tauri-apps/api/core";
 import { open, save, type OpenDialogOptions } from "@tauri-apps/plugin-dialog";
 
 /** 是否运行在 Tauri 环境中(纯浏览器 dev 时为 false) */
@@ -22,6 +21,11 @@ export interface DirEntry {
 
 export async function listDir(path: string): Promise<DirEntry[]> {
   return invoke<DirEntry[]>("list_dir", { path });
+}
+
+/** 递归列出目录下所有 markdown 文件(上限 limit 条) */
+export async function listFilesRecursive(dir: string, limit = 500): Promise<DirEntry[]> {
+  return invoke<DirEntry[]>("list_files_recursive", { dir, limit });
 }
 
 export async function loadSettings<T>(): Promise<T> {

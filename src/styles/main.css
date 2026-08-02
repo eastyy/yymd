@@ -312,6 +312,79 @@ body {
   text-align: center;
 }
 
+/* ===== 快速打开 (Cmd+P) ===== */
+.quickopen-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 15vh;
+}
+.quickopen {
+  width: 560px;
+  max-width: 90vw;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px var(--shadow);
+  overflow: hidden;
+}
+.quickopen input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  padding: 14px 16px;
+  font-size: 15px;
+  border-bottom: 1px solid var(--border-light);
+}
+.quickopen-list {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+.quickopen-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.quickopen-list li.active {
+  background: var(--accent-bg);
+}
+.quickopen-list li.active .qo-name {
+  color: var(--accent);
+}
+.qo-name {
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.qo-dir {
+  color: var(--text-muted);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+.quickopen-empty {
+  color: var(--text-muted);
+  text-align: center;
+  justify-content: center;
+}
+
 /* ===== 源码编辑器 ===== */
 .source-editor {
   width: 100%;

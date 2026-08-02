@@ -17,6 +17,8 @@ interface AppState {
   theme: ThemeName;
   focusMode: boolean;
   searchOpen: boolean;
+  quickOpenOpen: boolean;
+  recentFiles: string[];
 
   setFilePath: (p: string | null) => void;
   setDirty: (d: boolean) => void;
@@ -29,6 +31,9 @@ interface AppState {
   setTheme: (t: ThemeName) => void;
   toggleFocusMode: () => void;
   setSearchOpen: (v: boolean) => void;
+  setQuickOpenOpen: (v: boolean) => void;
+  setRecentFiles: (files: string[]) => void;
+  addRecent: (path: string) => void;
   reset: () => void;
 }
 
@@ -45,6 +50,8 @@ export const useAppStore = create<AppState>((set) => ({
   theme: "github",
   focusMode: false,
   searchOpen: false,
+  quickOpenOpen: false,
+  recentFiles: [],
 
   setFilePath: (p) => set({ filePath: p }),
   setDirty: (d) => set({ dirty: d }),
@@ -57,6 +64,12 @@ export const useAppStore = create<AppState>((set) => ({
   setTheme: (t) => set({ theme: t }),
   toggleFocusMode: () => set((s) => ({ focusMode: !s.focusMode })),
   setSearchOpen: (v) => set({ searchOpen: v }),
+  setQuickOpenOpen: (v) => set({ quickOpenOpen: v }),
+  setRecentFiles: (files) => set({ recentFiles: files }),
+  addRecent: (path) =>
+    set((s) => ({
+      recentFiles: [path, ...s.recentFiles.filter((p) => p !== path)].slice(0, 10),
+    })),
   reset: () => set({ filePath: null, dirty: false, markdown: "" }),
 }));
 

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAppStore } from "./store/useAppStore";
+import { useAppStore, type ThemeName } from "./store/useAppStore";
 import { isTauri, loadSettings, saveSettings } from "./lib/bridge";
 import { newDoc, openDoc, saveDoc, saveAsDoc, toggleSourceMode, syncStats } from "./lib/fileActions";
 import { WELCOME_DOC } from "./lib/welcome";
@@ -8,9 +8,11 @@ import EditorPane from "./components/EditorPane";
 import SourceEditor from "./components/SourceEditor";
 import StatusBar from "./components/StatusBar";
 import SearchBar from "./components/SearchBar";
+import QuickOpen from "./components/QuickOpen";
 
 interface Settings {
-  theme?: "github" | "github-dark";
+  theme?: ThemeName;
+  recent?: string[];
 }
 
 export default function App() {
@@ -20,6 +22,7 @@ export default function App() {
   const focusMode = useAppStore((s) => s.focusMode);
   const setTheme = useAppStore((s) => s.setTheme);
   const searchOpen = useAppStore((s) => s.searchOpen);
+  const quickOpenOpen = useAppStore((s) => s.quickOpenOpen);
 
   // 应用主题
   useEffect(() => {
@@ -35,16 +38,18 @@ export default function App() {
       loadSettings<Settings>()
         .then((cfg) => {
           if (cfg.theme) setTheme(cfg.theme);
+          if (Array.isArray(cfg.recent)) useAppStore.getState().setRecentFiles(cfg.recent);
         })
         .catch(() => {});
     }
     // 关闭前保存设置
   }, [setTheme]);
 
-  // 持久化主题
+  // 持久化设置(主题 + 最近文件)
+  const recentFiles = useAppStore((s) => s.recentFiles);
   useEffect(() => {
-    if (isTauri) saveSettings({ theme }).catch(() => {});
-  }, [theme]);
+    if (isTauri) saveSettings({ theme, recent: recentFiles }).catch(() => {});
+  }, [theme, recentFiles]);
 
   // 监听原生菜单事件
   useEffect(() => {
@@ -112,6 +117,9 @@ export default function App() {
           e.preventDefault();
           useAppStore.getState().setSearchOpen(true);
         }
+      } else if (key === "p") {
+        e.preventDefault();
+        useAppStore.getState().setQuickOpenOpen(true);
       } else if (e.key === "/") {
         e.preventDefault();
         toggleSourceMode();
@@ -129,6 +137,7 @@ export default function App() {
         {viewMode === "wysiwyg" ? <EditorPane /> : <SourceEditor />}
       </main>
       <StatusBar />
+      {quickOpenOpen && <QuickOpen />}
     </div>
   );
 }

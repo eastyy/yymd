@@ -66,6 +66,49 @@ fn save_asset(dir: String, filename: String, base64_data: String) -> Result<Stri
     Ok(full.to_string_lossy().to_string())
 }
 
+#[tauri::command]
+fn list_files_recursive(dir: String, limit: usize) -> Result<Vec<FileEntry>, String> {
+    let mut out = Vec::new();
+    let root = std::path::Path::new(&dir);
+    if !root.exists() {
+        return Ok(out);
+    }
+    let skip = [".git", "node_modules", "target", "dist", ".vscode", ".idea", ".obsidian", "yymd-assets"];
+    let mut stack = vec![root.to_path_buf()];
+    while let Some(d) = stack.pop() {
+        let entries = match fs::read_dir(&d) {
+            Ok(e) => e,
+            Err(_) => continue,
+        };
+        for entry in entries.flatten() {
+            let name = entry.file_name().to_string_lossy().to_string();
+            if name.starts_with('.') {
+                continue;
+            }
+            let path = entry.path();
+            let is_dir = entry.file_type().map(|t| t.is_dir()).unwrap_or(false);
+            if is_dir {
+                if !skip.contains(&name.as_str()) {
+                    stack.push(path);
+                }
+            } else {
+                let lower = name.to_lowercase();
+                if lower.ends_with(".md") || lower.ends_with(".markdown") || lower.ends_with(".mdown") {
+                    out.push(FileEntry {
+                        name,
+                        path: path.to_string_lossy().to_string(),
+                        is_dir: false,
+                    });
+                    if out.len() >= limit {
+                        return Ok(out);
+                    }
+                }
+            }
+        }
+    }
+    Ok(out)
+}
+
 fn settings_path() -> Result<std::path::PathBuf, String> {
     let base = dirs::config_dir().ok_or_else(|| "无法获取配置目录".to_string())?;
     let dir = base.join("yymd");
@@ -156,7 +199,8 @@ pub fn run() {
             load_settings,
             save_settings,
             show_in_folder,
-            save_asset
+            save_asset,
+            list_files_recursive
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
