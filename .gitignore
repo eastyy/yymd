@@ -17,3 +17,6 @@ npm-debug.log*
 
 # tauri
 src-tauri/WixTools/
+
+# subagent artifacts
+.pi-subagents/

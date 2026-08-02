@@ -51,6 +51,21 @@ fn list_dir(path: String) -> Result<Vec<FileEntry>, String> {
     Ok(entries)
 }
 
+#[tauri::command]
+fn save_asset(dir: String, filename: String, base64_data: String) -> Result<String, String> {
+    use base64::Engine;
+    let bytes = base64::engine::general_purpose::STANDARD
+        .decode(base64_data.as_bytes())
+        .map_err(|e| format!("base64 解码失败: {}", e))?;
+    let dir_path = std::path::Path::new(&dir);
+    if !dir_path.exists() {
+        fs::create_dir_all(dir_path).map_err(|e| format!("创建目录失败: {}", e))?;
+    }
+    let full = dir_path.join(&filename);
+    fs::write(&full, bytes).map_err(|e| format!("写入图片失败: {}", e))?;
+    Ok(full.to_string_lossy().to_string())
+}
+
 fn settings_path() -> Result<std::path::PathBuf, String> {
     let base = dirs::config_dir().ok_or_else(|| "无法获取配置目录".to_string())?;
     let dir = base.join("yymd");
@@ -140,7 +155,8 @@ pub fn run() {
             list_dir,
             load_settings,
             save_settings,
-            show_in_folder
+            show_in_folder,
+            save_asset
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

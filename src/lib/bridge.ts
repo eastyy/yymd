@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { open, save, type OpenDialogOptions } from "@tauri-apps/plugin-dialog";
 
 /** 是否运行在 Tauri 环境中(纯浏览器 dev 时为 false) */
@@ -38,6 +39,20 @@ export async function saveSettings(obj: unknown): Promise<void> {
 
 export async function showInFolder(path: string): Promise<void> {
   await invoke("show_in_folder", { path });
+}
+
+/** 把 base64 图片写入指定目录,返回最终绝对路径 */
+export async function saveAsset(
+  dir: string,
+  filename: string,
+  base64Data: string,
+): Promise<string> {
+  return invoke<string>("save_asset", { dir, filename, base64Data });
+}
+
+/** 把本地文件路径转成 webview 可加载的 asset URL */
+export function toAssetUrl(absPath: string): string {
+  return convertFileSrc(absPath);
 }
 
 const MD_FILTERS = [
