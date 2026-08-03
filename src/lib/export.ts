@@ -136,6 +136,8 @@ export function exportCss(theme: ExportTheme): string {
   /* 数学公式 / 图表 */
   .markdown-body .math-block, .markdown-body .math-display { overflow-x: auto; padding: 0.5em 0; text-align: center; }
   .markdown-body .diagram { text-align: center; margin: 1em 0; }
+  .markdown-body .diagram .diagram-source { display: none; }
+  .markdown-body .diagram .diagram-svg { display: flex; justify-content: center; overflow-x: auto; }
 
   /* Prism 代码高亮 token */
   .token.comment, .token.prolog, .token.doctype, .token.cdata { color: var(--text-muted); }

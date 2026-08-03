@@ -189,7 +189,6 @@
 
 /* 图表 */
 .ProseMirror .diagram {
-  text-align: center;
   margin: 1em 0;
   padding: 0.75em;
   border: 1px dashed var(--border-light);
@@ -201,10 +200,16 @@
   justify-content: center;
   align-items: center;
   overflow-x: auto;
+  min-height: 2.5em;
 }
 .ProseMirror .diagram .diagram-svg svg {
   max-width: 100%;
   height: auto;
+}
+.ProseMirror .diagram:not(.editing) .diagram-svg:empty::before {
+  content: "mermaid 图表(点击编辑源码)";
+  color: var(--text-muted);
+  font-size: 13px;
 }
 .ProseMirror .diagram .diagram-svg.diagram-error {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -212,6 +217,33 @@
   color: var(--text-muted);
   white-space: pre-wrap;
   text-align: left;
+  justify-content: flex-start;
+}
+.ProseMirror .diagram .diagram-source {
+  display: none;
+  margin: 0;
+  padding: 0.5em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  text-align: left;
+  color: var(--code-text);
+  background: var(--code-bg);
+  border-radius: 6px;
+  min-height: 3em;
+  outline: none;
+  caret-color: var(--accent);
+}
+.ProseMirror .diagram.editing {
+  border-color: var(--accent);
+  border-style: solid;
+}
+.ProseMirror .diagram.editing .diagram-svg {
+  display: none;
+}
+.ProseMirror .diagram.editing .diagram-source {
+  display: block;
 }
 
 /* 斜杠菜单 */

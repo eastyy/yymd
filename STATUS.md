@@ -11,8 +11,10 @@
 - [x] CommonMark + GFM:标题、列表、任务列表、表格、删除线、脚注
 - [x] 数学公式 KaTeX(行内 + 块级)
 - [x] 代码块 Prism 语法高亮
-- [x] Mermaid 图表:升级 **mermaid 11.16**,真实 SVG 渲染(nodeView),支持全部最新图类型
-  (packet / architecture / kanban / radar / block-beta / timeline / mindmap / xychart 等,10 个语法解析测试覆盖)
+- [x] Mermaid 图表:升级 **mermaid 11.16**,真实 SVG 渲染(自研可编辑节点),支持全部最新图类型
+  (packet / architecture / kanban / radar / block-beta / timeline / mindmap / xychart 等)
+  - 输入 ` ```mermaid ` 立即创建图表节点,点击即可就地编辑源码,失焦后只显示渲染结果
+  - 语法错误回退显示源码;主题切换自动重渲染;导出 HTML 内联 SVG
 - [x] 源码模式切换(`Cmd/Ctrl + /`)
 - [x] 原生应用菜单(文件/编辑)+ 全局快捷键(`Cmd+S/O/N`)
 - [x] 文件打开 / 保存 / 另存为(原生对话框)
@@ -45,7 +47,7 @@
 
 ## 🧪 验证状态
 - TypeScript:`tsc --noEmit` ✅ 0 error
-- 单元测试:vitest **35 passed**(大纲解析、字数统计、导出、主题注册表、mermaid v11 最新语法解析)
+- 单元测试:vitest **36 passed**(大纲解析、字数统计、导出、主题注册表、mermaid v11 最新语法解析、diagram 节点管道端到端)
 - Rust:`cargo check` ✅
 - 完整构建:`cargo tauri build --debug` ✅(Yymd.app + DMG,含全部功能)
 - 运行时:启动二进制存活、无错误日志、编辑器(含斜杠菜单/浮动工具栏)初始化正常 ✅
