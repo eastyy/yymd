@@ -191,6 +191,27 @@
 .ProseMirror .diagram {
   text-align: center;
   margin: 1em 0;
+  padding: 0.75em;
+  border: 1px dashed var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+}
+.ProseMirror .diagram .diagram-svg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+}
+.ProseMirror .diagram .diagram-svg svg {
+  max-width: 100%;
+  height: auto;
+}
+.ProseMirror .diagram .diagram-svg.diagram-error {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  text-align: left;
 }
 
 /* 斜杠菜单 */

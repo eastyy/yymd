@@ -7,7 +7,8 @@
 **编辑体验**
 - ✅ 所见即所得(源码与预览合一,无需分屏)
 - ✅ CommonMark + GFM 全语法:标题、列表、任务列表、表格、脚注、删除线
-- ✅ 数学公式(KaTeX)、代码高亮(Prism)、Mermaid 图表
+- ✅ 数学公式(KaTeX)、代码高亮(Prism)
+- ✅ Mermaid 图表(mermaid 11 最新语法:packet/architecture/kanban/radar/block-beta/timeline/mindmap/xychart 等,真实 SVG 渲染)
 - ✅ 斜杠菜单:输入 `/` 快速插入标题/列表/表格/代码块等
 - ✅ 浮动工具栏:选中文字即出现格式化按钮(粗体/斜体/链接/标题…)
 - ✅ 源码模式切换(`Ctrl/Cmd + /`)

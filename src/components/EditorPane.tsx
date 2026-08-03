@@ -8,6 +8,7 @@ import { clipboard } from "@milkdown/plugin-clipboard";
 import { listener, listenerCtx } from "@milkdown/plugin-listener";
 import { math } from "@milkdown/plugin-math";
 import { diagram } from "@milkdown/plugin-diagram";
+import { diagramView } from "../lib/diagramView";
 import { prism } from "@milkdown/plugin-prism";
 import { Milkdown, MilkdownProvider, useEditor } from "@milkdown/react";
 import { imagePlugin } from "../lib/imagePlugin";
@@ -35,6 +36,7 @@ function MilkdownInner() {
       .use(clipboard)
       .use(math)
       .use(diagram)
+      .use(diagramView)
       .use(prism)
       .use(imagePlugin)
       .use(searchPlugin)
