@@ -29,16 +29,46 @@ function chunk(type, data) {
   return Buffer.concat([len, body, crc]);
 }
 
+// 点到线段距离(用于抗锯齿笔画)
+function segDist(px, py, ax, ay, bx, by) {
+  const dx = bx - ax;
+  const dy = by - ay;
+  const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)));
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
+
+// 单个字母 Y 的笔画强度(0..1),cx0 为字母中心 x,坐标相对画布中心
+const GLYPH_H = 470;
+const GLYPH_W = 300;
+const BAR = 84;
+function yIntensity(cx0, cx, cy) {
+  const junctionY = -GLYPH_H * 0.06; // 两条斜线交汇点(略高于垂直中心)
+  const d1 = segDist(cx, cy, cx0 - GLYPH_W / 2, -GLYPH_H / 2, cx0, junctionY); // 左斜
+  const d2 = segDist(cx, cy, cx0 + GLYPH_W / 2, -GLYPH_H / 2, cx0, junctionY); // 右斜
+  const d3 = segDist(cx, cy, cx0, junctionY, cx0, GLYPH_H / 2); // 竖干
+  const d = Math.min(d1, d2, d3);
+  const half = BAR / 2;
+  if (d < half - 1.5) return 1;
+  if (d > half + 1.5) return 0;
+  return (half + 1.5 - d) / 3;
+}
+
+// 两个 Y 的中心位置(画布中心为原点)
+const GAP = 122;
+const Y_CENTERS = [-(GLYPH_W / 2 + GAP / 2), GLYPH_W / 2 + GAP / 2];
+
+// 深灰字母颜色
+const GRAY = 61; // #3d3d3d
+
 // RGBA 像素
 const raw = Buffer.alloc(SIZE * SIZE * 4);
 for (let y = 0; y < SIZE; y++) {
   for (let x = 0; x < SIZE; x++) {
     const i = (y * SIZE + x) * 4;
-    // 圆角方形背景:深蓝渐变
-    const t = y / SIZE;
-    let r = Math.round(30 + t * 20);
-    let g = Math.round(60 + t * 40);
-    let b = Math.round(120 + t * 80);
+    // 白底圆角方形背景
+    let r = 255;
+    let g = 255;
+    let b = 255;
     let a = 255;
 
     // 圆角遮罩(半径 180)
@@ -48,26 +78,21 @@ for (let y = 0; y < SIZE; y++) {
     if (dx < radius && dy < radius) {
       const dist = Math.hypot(radius - dx, radius - dy);
       if (dist > radius) a = 0;
-      else if (dist > radius - 2) a = Math.round((radius - dist) / 2 * 255);
+      else if (dist > radius - 2) a = Math.round(((radius - dist) / 2) * 255);
     }
 
-    // 中间画一个白色 "M" 形状(两条竖条 + V 形)
-    const cx = x - SIZE / 2;
-    const cy = y - SIZE / 2;
-    const half = 300;
-    if (a > 0 && Math.abs(cx) < half && Math.abs(cy) < half) {
-      const bar = 70;
-      const inLeftBar = Math.abs(cx + half + bar / 2 - bar) < bar;
-      const inRightBar = Math.abs(cx - half - bar / 2 + bar) < bar;
-      // 中间 V: 由两条斜线构成
-      const slope = half / (half * 0.9);
-      const vLeft = Math.abs((cx + half) * -slope - cy + half * 0.1);
-      const vRight = Math.abs((cx - half) * slope - cy + half * 0.1);
-      const inV = Math.abs(cx) < half * 0.7 && (vLeft < bar || vRight < bar);
-      if ((Math.abs(cx + half * 0.55) < bar || Math.abs(cx - half * 0.55) < bar) || inV) {
-        r = 255;
-        g = 255;
-        b = 255;
+    // 深灰色 "YY" 字母
+    if (a > 0) {
+      const cx = x - SIZE / 2;
+      const cy = y - SIZE / 2;
+      let intensity = 0;
+      for (const c0 of Y_CENTERS) {
+        intensity = Math.max(intensity, yIntensity(c0, cx, cy));
+      }
+      if (intensity > 0) {
+        r = Math.round(255 + (GRAY - 255) * intensity);
+        g = Math.round(255 + (GRAY - 255) * intensity);
+        b = Math.round(255 + (GRAY - 255) * intensity);
       }
     }
 
