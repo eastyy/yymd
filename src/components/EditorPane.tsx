@@ -14,6 +14,7 @@ import { searchPlugin } from "../lib/searchPlugin";
 import { typewriterPlugin, focusModePlugin } from "../lib/editModePlugins";
 import { diagramPlugin } from "../lib/diagramPlugin";
 import { linkPlugin } from "../lib/linkPlugin";
+import { frontmatterPlugin } from "../lib/frontmatterPlugin";
 import { slashMenuPlugin } from "../plugins/slash-menu";
 import { floatingToolbarPlugin } from "../plugins/floating-toolbar";
 import { useAppStore } from "../store/useAppStore";
@@ -33,6 +34,7 @@ function MilkdownInner() {
       })
       .use(commonmark)
       .use(gfm)
+      .use(frontmatterPlugin)
       .use(history)
       .use(clipboard)
       .use(math)

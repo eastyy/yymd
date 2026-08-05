@@ -138,6 +138,9 @@ export function exportCss(theme: ExportTheme): string {
   .markdown-body .diagram { text-align: center; margin: 1em 0; }
   .markdown-body .diagram .diagram-source { display: none; }
   .markdown-body .diagram .diagram-svg { display: flex; justify-content: center; overflow-x: auto; }
+  .markdown-body .frontmatter { border: 1px dashed #ccc; border-radius: 8px; margin: 1em 0; overflow: hidden; }
+  .markdown-body .frontmatter .frontmatter-label { padding: 4px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #888; background: rgba(0,0,0,0.04); border-bottom: 1px solid #eee; }
+  .markdown-body .frontmatter .frontmatter-source { margin: 0; padding: 0.6em 0.75em; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; white-space: pre-wrap; }
 
   /* Prism 代码高亮 token */
   .token.comment, .token.prolog, .token.doctype, .token.cdata { color: var(--text-muted); }

@@ -251,6 +251,35 @@
   display: block;
 }
 
+/* YAML Frontmatter */
+.ProseMirror .frontmatter {
+  margin: 1em 0;
+  border: 1px dashed var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+.ProseMirror .frontmatter .frontmatter-label {
+  padding: 4px 12px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--code-bg);
+  border-bottom: 1px solid var(--border-light);
+}
+.ProseMirror .frontmatter .frontmatter-source {
+  margin: 0;
+  padding: 0.6em 0.75em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: var(--code-text);
+  outline: none;
+  caret-color: var(--accent);
+}
+
 /* 斜杠菜单 */
 .slash-menu {
   position: fixed;
