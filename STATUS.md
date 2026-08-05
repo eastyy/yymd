@@ -37,6 +37,10 @@
 - [x] **真·专注模式**:非当前段落自动变暗
 - [x] **斜杠菜单**:输入 `/` 弹出块级插入(标题/列表/表格/代码块/分割线等),键盘过滤+导航
 - [x] **选区浮动工具栏**:选中文字出现格式化按钮(粗体/斜体/删除线/行内代码/链接/标题/引用/代码块)
+- [x] **链接导航(Typora 式)**:点击文档内链接——本地 .md/.txt 直接打开(相对/绝对/Windows 路径、`../`、`#锚点`滚动)、
+  其他文件交给系统应用、http(s) 外部链接用浏览器打开(新增 `open_external` 命令)
+- [x] **YAML frontmatter**:文档开头 `---` 块解析为可编辑节点(remark-frontmatter),带标签样式,
+  自定义 yaml 序列化 handler 保证往返一致
 
 ## 📋 后续路线图
 - [ ] Word / LaTeX 导出(Pandoc 集成)
@@ -49,8 +53,8 @@
 
 ## 🧪 验证状态
 - TypeScript:`tsc --noEmit` ✅ 0 error
-- 单元测试:vitest **37 passed**(大纲解析、字数统计、导出、主题注册表、mermaid v11 最新语法解析、
-  diagram 节点管道端到端、输入规则+Enter 换行模拟)
+- 单元测试:vitest **50 passed**(大纲解析、字数统计、导出、主题注册表、mermaid v11 最新语法解析、
+  diagram 节点管道端到端、输入规则+Enter 换行模拟、链接/路径解析 11 例、frontmatter 往返)
 - Rust:`cargo check` ✅
 - 完整构建:`cargo tauri build --debug` ✅(Yymd.app + DMG,含全部功能)
 - 运行时:启动二进制存活、无错误日志、编辑器(含斜杠菜单/浮动工具栏)初始化正常 ✅
