@@ -44,6 +44,8 @@
 - [x] **会话恢复**:启动时重新打开上次编辑的文件(持久化到 settings,文件已删则回落欢迎页)
 - [x] **文件树右键菜单**:新建文件/文件夹、重命名、删除(含确认)、在访达中显示、刷新;
   新增 Rust 命令 create_file / create_dir / rename_path / remove_path
+- [x] **选区自动包裹(Typora 行为)**:选中文字后按引号/括号/反引号/星号等成对符号,
+  自动包住选区而非替换(无选区时不拦截,正常插入)
 - [x] **表格浮动工具栏(Typora 式)**:光标进入表格时上方出现按钮——左/右插列、上/下插行、删行、删列、删表格;
   基于 prosemirror-tables 命令,表头切换因 milkdown gfm 表格 schema(首行强制表头)限制已移除
 
@@ -58,9 +60,9 @@
 
 ## 🧪 验证状态
 - TypeScript:`tsc --noEmit` ✅ 0 error
-- 单元测试:vitest **51 passed**(大纲解析、字数统计、导出、主题注册表、mermaid v11 最新语法解析、
-  diagram 节点管道端到端、输入规则+Enter 换行模拟、链接/路径解析 11 例、frontmatter 往返、
-  表格命令集成)
+- 单元测试:vitest **54 passed**(大纲解析、字数统计、导出、主题注册表、mermaid v11 最新语法解析、
+  diagram 节点管道端到端、输入规则+Enter 换行模拟、链接/路径解析、frontmatter 往返、
+  表格命令集成、选区自动包裹)
 - Rust:`cargo check` ✅
 - 完整构建:`cargo tauri build --debug` ✅(Yymd.app + DMG,含全部功能)
 - 运行时:启动二进制存活、无错误日志、编辑器(含斜杠菜单/浮动工具栏)初始化正常 ✅
