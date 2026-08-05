@@ -13,6 +13,7 @@ import { imagePlugin } from "../lib/imagePlugin";
 import { searchPlugin } from "../lib/searchPlugin";
 import { typewriterPlugin, focusModePlugin } from "../lib/editModePlugins";
 import { diagramPlugin } from "../lib/diagramPlugin";
+import { linkPlugin } from "../lib/linkPlugin";
 import { slashMenuPlugin } from "../plugins/slash-menu";
 import { floatingToolbarPlugin } from "../plugins/floating-toolbar";
 import { useAppStore } from "../store/useAppStore";
@@ -43,6 +44,7 @@ function MilkdownInner() {
       .use(focusModePlugin)
       .use(slashMenuPlugin)
       .use(floatingToolbarPlugin)
+      .use(linkPlugin)
       .use(listener)
       .config((ctx) => {
         ctx.get(listenerCtx).markdownUpdated((_ctx, md) => {

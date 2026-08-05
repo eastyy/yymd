@@ -45,6 +45,11 @@ export async function showInFolder(path: string): Promise<void> {
   await invoke("show_in_folder", { path });
 }
 
+/** 用系统默认应用打开文件 / URL */
+export async function openExternal(target: string): Promise<void> {
+  await invoke("open_external", { target });
+}
+
 /** 把 base64 图片写入指定目录,返回最终绝对路径 */
 export async function saveAsset(
   dir: string,

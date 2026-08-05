@@ -120,6 +120,18 @@ export async function toggleSourceMode() {
   }
 }
 
+import type { EditorView } from "@milkdown/prose/view";
+
+/** 把编辑器滚动到文档内某个位置 */
+function scrollViewToPos(view: EditorView, pos: number) {
+  const coords = view.coordsAtPos(pos);
+  const scroller = (view.dom.closest(".editor-scroll") as HTMLElement) || document.scrollingElement;
+  if (scroller) {
+    const rect = (scroller as HTMLElement).getBoundingClientRect();
+    scroller.scrollTo({ top: coords.top - rect.top + scroller.scrollTop - 80, behavior: "smooth" });
+  }
+}
+
 /** 滚动编辑器到指定行(大纲点击用) */
 export async function scrollToLine(line: number) {
   const ed = getCurrentEditor();
@@ -133,12 +145,28 @@ export async function scrollToLine(line: number) {
     const target = Math.min(line, lines.length - 1);
     for (let i = 0; i < target; i++) pos += lines[i].length + 1;
     pos = Math.min(pos, doc.content.size - 1);
-    const coords = view.coordsAtPos(pos);
-    const scroller = (view.dom.closest(".editor-scroll") as HTMLElement) || document.scrollingElement;
-    if (scroller) {
-      const rect = (scroller as HTMLElement).getBoundingClientRect();
-      scroller.scrollTo({ top: coords.top - rect.top + scroller.scrollTop - 80, behavior: "smooth" });
-    }
+    scrollViewToPos(view, pos);
+  } catch {
+    /* ignore */
+  }
+}
+
+/** 滚动到标题文本匹配的位置(文档内锚点链接用) */
+export async function scrollToHeading(text: string) {
+  const ed = getCurrentEditor();
+  if (!ed) return;
+  const wanted = text.trim().toLowerCase();
+  if (!wanted) return;
+  try {
+    const view = await ed.action((ctx) => ctx.get(editorViewCtx));
+    let pos = -1;
+    view.state.doc.descendants((node, p) => {
+      if (pos < 0 && node.type.name === "heading") {
+        const t = node.textContent.trim().toLowerCase();
+        if (t === wanted) pos = p;
+      }
+    });
+    if (pos >= 0) scrollViewToPos(view, pos);
   } catch {
     /* ignore */
   }

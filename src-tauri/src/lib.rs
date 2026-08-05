@@ -162,6 +162,19 @@ fn show_in_folder(path: String) -> Result<(), String> {
     result.map(|_| ()).map_err(|e| format!("打开失败: {}", e))
 }
 
+#[tauri::command]
+fn open_external(target: String) -> Result<(), String> {
+    #[cfg(target_os = "macos")]
+    let result = std::process::Command::new("open").arg(&target).spawn();
+    #[cfg(target_os = "windows")]
+    let result = std::process::Command::new("cmd")
+        .args(["/C", "start", "", &target])
+        .spawn();
+    #[cfg(all(unix, not(target_os = "macos")))]
+    let result = std::process::Command::new("xdg-open").arg(&target).spawn();
+    result.map(|_| ()).map_err(|e| format!("打开失败: {}", e))
+}
+
 fn build_menu(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     let new_i = MenuItem::with_id(app, "file.new", "新建", true, Some("CmdOrCtrl+N"))?;
     let open_i = MenuItem::with_id(app, "file.open", "打开…", true, Some("CmdOrCtrl+O"))?;
@@ -217,6 +230,7 @@ pub fn run() {
             load_settings,
             save_settings,
             show_in_folder,
+            open_external,
             save_asset,
             list_files_recursive,
             debug_log
