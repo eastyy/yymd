@@ -175,6 +175,34 @@ fn open_external(target: String) -> Result<(), String> {
     result.map(|_| ()).map_err(|e| format!("打开失败: {}", e))
 }
 
+#[tauri::command]
+fn create_file(path: String, content: String) -> Result<(), String> {
+    if let Some(parent) = Path::new(&path).parent() {
+        fs::create_dir_all(parent).map_err(|e| format!("创建目录失败: {}", e))?;
+    }
+    fs::write(&path, content).map_err(|e| format!("创建失败 {}: {}", path, e))
+}
+
+#[tauri::command]
+fn create_dir(path: String) -> Result<(), String> {
+    fs::create_dir_all(&path).map_err(|e| format!("创建目录失败 {}: {}", path, e))
+}
+
+#[tauri::command]
+fn rename_path(from: String, to: String) -> Result<(), String> {
+    fs::rename(&from, &to).map_err(|e| format!("重命名失败 {}: {}", from, e))
+}
+
+#[tauri::command]
+fn remove_path(path: String) -> Result<(), String> {
+    let meta = fs::metadata(&path).map_err(|e| format!("无法访问 {}: {}", path, e))?;
+    if meta.is_dir() {
+        fs::remove_dir_all(&path).map_err(|e| format!("删除目录失败 {}: {}", path, e))
+    } else {
+        fs::remove_file(&path).map_err(|e| format!("删除失败 {}: {}", path, e))
+    }
+}
+
 fn build_menu(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     let new_i = MenuItem::with_id(app, "file.new", "新建", true, Some("CmdOrCtrl+N"))?;
     let open_i = MenuItem::with_id(app, "file.open", "打开…", true, Some("CmdOrCtrl+O"))?;
@@ -231,6 +259,10 @@ pub fn run() {
             save_settings,
             show_in_folder,
             open_external,
+            create_file,
+            create_dir,
+            rename_path,
+            remove_path,
             save_asset,
             list_files_recursive,
             debug_log

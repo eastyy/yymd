@@ -1,9 +1,16 @@
 import { describe, it, expect } from "vitest";
-import { resolveLink, resolvePath, dirnameOf, isAbsolutePath, isMarkdownFile } from "../paths";
+import { resolveLink, resolvePath, dirnameOf, isAbsolutePath, isMarkdownFile, joinPath } from "../paths";
 
 describe("paths", () => {
   it("dirnameOf", () => {
     expect(dirnameOf("/a/b/c.md")).toBe("/a/b");
+  });
+
+  it("joinPath", () => {
+    expect(joinPath("/a/b", "c.md")).toBe("/a/b/c.md");
+    expect(joinPath("/a/b/", "c.md")).toBe("/a/b/c.md");
+    expect(joinPath("C:\\notes", "a.md")).toBe("C:\\notes\\a.md");
+    expect(joinPath("C:\\notes\\", "a.md")).toBe("C:\\notes\\a.md");
     expect(dirnameOf("/a.md")).toBe("/");
     expect(dirnameOf("C:\\Users\\me\\doc.md")).toBe("C:/Users/me");
     expect(dirnameOf("plain.md")).toBe("");

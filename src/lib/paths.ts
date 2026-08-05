@@ -18,6 +18,14 @@ export function dirnameOf(p: string): string {
   return norm.slice(0, idx);
 }
 
+/** 目录 + 名字 → 完整路径(沿用目录原有分隔符风格) */
+export function joinPath(dir: string, name: string): string {
+  if (!dir) return name;
+  if (dir.endsWith("/") || dir.endsWith("\\")) return dir + name;
+  const sep = dir.includes("\\") && !dir.includes("/") ? "\\" : "/";
+  return dir + sep + name;
+}
+
 /** 将 rel 相对 base 文件解析为绝对路径(处理 . / ..) */
 export function resolvePath(baseFile: string, rel: string): string {
   const relNorm = rel.replace(/\\/g, "/");

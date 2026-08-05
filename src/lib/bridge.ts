@@ -50,6 +50,23 @@ export async function openExternal(target: string): Promise<void> {
   await invoke("open_external", { target });
 }
 
+/** 文件树操作 */
+export async function createFile(path: string, content = ""): Promise<void> {
+  await invoke("create_file", { path, content });
+}
+
+export async function createDir(path: string): Promise<void> {
+  await invoke("create_dir", { path });
+}
+
+export async function renamePath(from: string, to: string): Promise<void> {
+  await invoke("rename_path", { from, to });
+}
+
+export async function removePath(path: string): Promise<void> {
+  await invoke("remove_path", { path });
+}
+
 /** 把 base64 图片写入指定目录,返回最终绝对路径 */
 export async function saveAsset(
   dir: string,

@@ -409,3 +409,36 @@ body {
   font-size: 14px;
   line-height: 1.7;
 }
+
+/* 文件树右键菜单 */
+.ctx-menu {
+  position: fixed;
+  z-index: 300;
+  min-width: 170px;
+  padding: 4px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.ctx-item {
+  border: none;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.ctx-item:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+.ctx-item.danger:hover {
+  background: rgba(220, 60, 60, 0.12);
+  color: #d33;
+}

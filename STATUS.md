@@ -41,6 +41,7 @@
   其他文件交给系统应用、http(s) 外部链接用浏览器打开(新增 `open_external` 命令)
 - [x] **YAML frontmatter**:文档开头 `---` 块解析为可编辑节点(remark-frontmatter),带标签样式,
   自定义 yaml 序列化 handler 保证往返一致
+- [x] **会话恢复**:启动时重新打开上次编辑的文件(持久化到 settings,文件已删则回落欢迎页)
 - [x] **表格浮动工具栏(Typora 式)**:光标进入表格时上方出现按钮——左/右插列、上/下插行、删行、删列、删表格;
   基于 prosemirror-tables 命令,表头切换因 milkdown gfm 表格 schema(首行强制表头)限制已移除
 
