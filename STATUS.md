@@ -75,6 +75,13 @@
   (调试通道:`debug_log` Rust 命令 → `/tmp/yymd-webview.log`,仅 debug 构建)
 - Windows 构建:已配置 GitHub Actions(推 `v*` tag 触发)
 
+## 下版本规划
+
+后续需求已整理至 **ROADMAP.md**:
+- P0:拖拽打开、图片缩放、多标签页、pandoc 导出、TOC 目录
+- P1:文件树拖拽、最近文件面板、字数目标、公式交互、拼写检查、主题跟随系统、打印
+- P2:Windows CI 验证、Release 构建、自动更新、快捷键面板、欢迎页、中文标点
+
 ## 🏗 架构
 ```
 src/                     React 前端
