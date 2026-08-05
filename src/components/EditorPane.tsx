@@ -17,6 +17,7 @@ import { linkPlugin } from "../lib/linkPlugin";
 import { frontmatterPlugin } from "../lib/frontmatterPlugin";
 import { slashMenuPlugin } from "../plugins/slash-menu";
 import { floatingToolbarPlugin } from "../plugins/floating-toolbar";
+import { tableToolbarPlugin } from "../plugins/table-toolbar";
 import { useAppStore } from "../store/useAppStore";
 import { setCurrentEditor } from "../lib/editorRef";
 import { dlog } from "../lib/debugLog";
@@ -46,6 +47,7 @@ function MilkdownInner() {
       .use(focusModePlugin)
       .use(slashMenuPlugin)
       .use(floatingToolbarPlugin)
+      .use(tableToolbarPlugin)
       .use(linkPlugin)
       .use(listener)
       .config((ctx) => {

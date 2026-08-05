@@ -364,6 +364,39 @@
   color: var(--accent);
 }
 
+/* 表格浮动工具栏 */
+.table-toolbar {
+  position: fixed;
+  z-index: 200;
+  display: none;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px var(--shadow);
+  padding: 5px 7px;
+}
+.tt-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+.tt-btn:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
 /* 专注模式:暗化非焦点块 */
 .app.focus .ProseMirror > * {
   opacity: 0.35;
