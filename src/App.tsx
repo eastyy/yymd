@@ -14,6 +14,7 @@ interface Settings {
   theme?: ThemeName;
   recent?: string[];
   lastFile?: string;
+  fontSize?: number;
 }
 
 export default function App() {
@@ -24,11 +25,18 @@ export default function App() {
   const setTheme = useAppStore((s) => s.setTheme);
   const searchOpen = useAppStore((s) => s.searchOpen);
   const quickOpenOpen = useAppStore((s) => s.quickOpenOpen);
+  const fontSize = useAppStore((s) => s.fontSize);
+  const setFontSize = useAppStore((s) => s.setFontSize);
 
   // 应用主题
   useEffect(() => {
     document.body.dataset.theme = theme;
   }, [theme]);
+
+  // 应用编辑区字号
+  useEffect(() => {
+    document.documentElement.style.setProperty("--editor-font-size", `${fontSize}px`);
+  }, [fontSize]);
 
   // 启动:加载设置 + 欢迎文档(若上次打开了文件则恢复它)
   useEffect(() => {
@@ -40,6 +48,7 @@ export default function App() {
         .then(async (cfg) => {
           if (cfg.theme) setTheme(cfg.theme);
           if (Array.isArray(cfg.recent)) useAppStore.getState().setRecentFiles(cfg.recent);
+          if (typeof cfg.fontSize === "number") setFontSize(cfg.fontSize);
           if (cfg.lastFile) {
             try {
               await openFile(cfg.lastFile);
@@ -50,15 +59,15 @@ export default function App() {
         })
         .catch(() => {});
     }
-  }, [setTheme]);
+  }, [setTheme, setFontSize]);
 
-  // 持久化设置(主题 + 最近文件 + 当前文件)
+  // 持久化设置(主题 + 最近文件 + 当前文件 + 字号)
   const recentFiles = useAppStore((s) => s.recentFiles);
   const filePath = useAppStore((s) => s.filePath);
   useEffect(() => {
     if (isTauri)
-      saveSettings({ theme, recent: recentFiles, lastFile: filePath ?? undefined }).catch(() => {});
-  }, [theme, recentFiles, filePath]);
+      saveSettings({ theme, recent: recentFiles, lastFile: filePath ?? undefined, fontSize }).catch(() => {});
+  }, [theme, recentFiles, filePath, fontSize]);
 
   // 监听原生菜单事件
   useEffect(() => {
@@ -134,6 +143,17 @@ export default function App() {
       } else if (e.key === "/") {
         e.preventDefault();
         toggleSourceMode();
+      } else if (key === "=" || e.key === "+") {
+        e.preventDefault();
+        const st = useAppStore.getState();
+        st.setFontSize(st.fontSize + 2);
+      } else if (key === "-") {
+        e.preventDefault();
+        const st = useAppStore.getState();
+        st.setFontSize(st.fontSize - 2);
+      } else if (key === "0") {
+        e.preventDefault();
+        useAppStore.getState().setFontSize(16);
       }
     }
     window.addEventListener("keydown", onKey);

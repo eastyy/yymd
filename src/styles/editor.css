@@ -22,7 +22,7 @@
   outline: none;
   color: var(--text);
   line-height: 1.75;
-  font-size: 16px;
+  font-size: var(--editor-font-size, 16px);
   word-wrap: break-word;
 }
 .ProseMirror:focus {

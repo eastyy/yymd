@@ -20,6 +20,7 @@ interface AppState {
   searchOpen: boolean;
   quickOpenOpen: boolean;
   recentFiles: string[];
+  fontSize: number;
 
   setFilePath: (p: string | null) => void;
   setDirty: (d: boolean) => void;
@@ -36,6 +37,7 @@ interface AppState {
   setQuickOpenOpen: (v: boolean) => void;
   setRecentFiles: (files: string[]) => void;
   addRecent: (path: string) => void;
+  setFontSize: (n: number) => void;
   reset: () => void;
 }
 
@@ -55,6 +57,7 @@ export const useAppStore = create<AppState>((set) => ({
   searchOpen: false,
   quickOpenOpen: false,
   recentFiles: [],
+  fontSize: 16,
 
   setFilePath: (p) => set({ filePath: p }),
   setDirty: (d) => set({ dirty: d }),
@@ -74,6 +77,7 @@ export const useAppStore = create<AppState>((set) => ({
     set((s) => ({
       recentFiles: [path, ...s.recentFiles.filter((p) => p !== path)].slice(0, 10),
     })),
+  setFontSize: (n) => set({ fontSize: Math.min(28, Math.max(12, Math.round(n))) }),
   reset: () => set({ filePath: null, dirty: false, markdown: "" }),
 }));
 
