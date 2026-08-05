@@ -15,6 +15,7 @@ import { typewriterPlugin, focusModePlugin } from "../lib/editModePlugins";
 import { diagramPlugin } from "../lib/diagramPlugin";
 import { linkPlugin } from "../lib/linkPlugin";
 import { frontmatterPlugin } from "../lib/frontmatterPlugin";
+import { autoPairPlugin } from "../lib/autoPairPlugin";
 import { slashMenuPlugin } from "../plugins/slash-menu";
 import { floatingToolbarPlugin } from "../plugins/floating-toolbar";
 import { tableToolbarPlugin } from "../plugins/table-toolbar";
@@ -33,6 +34,7 @@ function MilkdownInner() {
         ctx.set(rootCtx, root);
         ctx.set(defaultValueCtx, useAppStore.getState().markdown);
       })
+      .use(autoPairPlugin)
       .use(commonmark)
       .use(gfm)
       .use(frontmatterPlugin)
