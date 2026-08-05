@@ -9,6 +9,7 @@ import SourceEditor from "./components/SourceEditor";
 import StatusBar from "./components/StatusBar";
 import SearchBar from "./components/SearchBar";
 import QuickOpen from "./components/QuickOpen";
+import GlobalSearch from "./components/GlobalSearch";
 
 interface Settings {
   theme?: ThemeName;
@@ -25,6 +26,7 @@ export default function App() {
   const setTheme = useAppStore((s) => s.setTheme);
   const searchOpen = useAppStore((s) => s.searchOpen);
   const quickOpenOpen = useAppStore((s) => s.quickOpenOpen);
+  const globalSearchOpen = useAppStore((s) => s.globalSearchOpen);
   const fontSize = useAppStore((s) => s.fontSize);
   const setFontSize = useAppStore((s) => s.setFontSize);
 
@@ -132,6 +134,9 @@ export default function App() {
       } else if (key === "n") {
         e.preventDefault();
         newDoc();
+      } else if (key === "f" && e.shiftKey) {
+        e.preventDefault();
+        useAppStore.getState().setGlobalSearchOpen(true);
       } else if (key === "f") {
         if (useAppStore.getState().viewMode === "wysiwyg") {
           e.preventDefault();
@@ -169,6 +174,7 @@ export default function App() {
       </main>
       <StatusBar />
       {quickOpenOpen && <QuickOpen />}
+      {globalSearchOpen && <GlobalSearch />}
     </div>
   );
 }

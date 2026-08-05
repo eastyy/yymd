@@ -19,6 +19,7 @@ interface AppState {
   typewriterMode: boolean;
   searchOpen: boolean;
   quickOpenOpen: boolean;
+  globalSearchOpen: boolean;
   recentFiles: string[];
   fontSize: number;
 
@@ -35,6 +36,7 @@ interface AppState {
   toggleTypewriter: () => void;
   setSearchOpen: (v: boolean) => void;
   setQuickOpenOpen: (v: boolean) => void;
+  setGlobalSearchOpen: (v: boolean) => void;
   setRecentFiles: (files: string[]) => void;
   addRecent: (path: string) => void;
   setFontSize: (n: number) => void;
@@ -56,6 +58,7 @@ export const useAppStore = create<AppState>((set) => ({
   typewriterMode: false,
   searchOpen: false,
   quickOpenOpen: false,
+  globalSearchOpen: false,
   recentFiles: [],
   fontSize: 16,
 
@@ -72,6 +75,7 @@ export const useAppStore = create<AppState>((set) => ({
   toggleTypewriter: () => set((s) => ({ typewriterMode: !s.typewriterMode })),
   setSearchOpen: (v) => set({ searchOpen: v }),
   setQuickOpenOpen: (v) => set({ quickOpenOpen: v }),
+  setGlobalSearchOpen: (v) => set({ globalSearchOpen: v }),
   setRecentFiles: (files) => set({ recentFiles: files }),
   addRecent: (path) =>
     set((s) => ({
