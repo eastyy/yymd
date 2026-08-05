@@ -16,6 +16,7 @@ import { diagramPlugin } from "../lib/diagramPlugin";
 import { linkPlugin } from "../lib/linkPlugin";
 import { frontmatterPlugin } from "../lib/frontmatterPlugin";
 import { autoPairPlugin } from "../lib/autoPairPlugin";
+import { emojiPlugin } from "../lib/emojiPlugin";
 import { slashMenuPlugin } from "../plugins/slash-menu";
 import { floatingToolbarPlugin } from "../plugins/floating-toolbar";
 import { tableToolbarPlugin } from "../plugins/table-toolbar";
@@ -35,6 +36,7 @@ function MilkdownInner() {
         ctx.set(defaultValueCtx, useAppStore.getState().markdown);
       })
       .use(autoPairPlugin)
+      .use(emojiPlugin)
       .use(commonmark)
       .use(gfm)
       .use(frontmatterPlugin)
