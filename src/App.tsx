@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAppStore, type ThemeName } from "./store/useAppStore";
 import { isTauri, loadSettings, saveSettings } from "./lib/bridge";
-import { newDoc, openDoc, saveDoc, saveAsDoc, toggleSourceMode, syncStats, exportCurrent } from "./lib/fileActions";
+import { newDoc, openDoc, openFile, saveDoc, saveAsDoc, toggleSourceMode, syncStats, exportCurrent } from "./lib/fileActions";
 import { WELCOME_DOC } from "./lib/welcome";
 import Sidebar from "./components/Sidebar";
 import EditorPane from "./components/EditorPane";
@@ -13,6 +13,7 @@ import QuickOpen from "./components/QuickOpen";
 interface Settings {
   theme?: ThemeName;
   recent?: string[];
+  lastFile?: string;
 }
 
 export default function App() {
@@ -29,27 +30,35 @@ export default function App() {
     document.body.dataset.theme = theme;
   }, [theme]);
 
-  // 启动:加载设置 + 欢迎文档
+  // 启动:加载设置 + 欢迎文档(若上次打开了文件则恢复它)
   useEffect(() => {
     const s = useAppStore.getState();
     s.setMarkdown(WELCOME_DOC);
     syncStats(WELCOME_DOC);
     if (isTauri) {
       loadSettings<Settings>()
-        .then((cfg) => {
+        .then(async (cfg) => {
           if (cfg.theme) setTheme(cfg.theme);
           if (Array.isArray(cfg.recent)) useAppStore.getState().setRecentFiles(cfg.recent);
+          if (cfg.lastFile) {
+            try {
+              await openFile(cfg.lastFile);
+            } catch {
+              /* 文件已删除/不可读则保持欢迎页 */
+            }
+          }
         })
         .catch(() => {});
     }
-    // 关闭前保存设置
   }, [setTheme]);
 
-  // 持久化设置(主题 + 最近文件)
+  // 持久化设置(主题 + 最近文件 + 当前文件)
   const recentFiles = useAppStore((s) => s.recentFiles);
+  const filePath = useAppStore((s) => s.filePath);
   useEffect(() => {
-    if (isTauri) saveSettings({ theme, recent: recentFiles }).catch(() => {});
-  }, [theme, recentFiles]);
+    if (isTauri)
+      saveSettings({ theme, recent: recentFiles, lastFile: filePath ?? undefined }).catch(() => {});
+  }, [theme, recentFiles, filePath]);
 
   // 监听原生菜单事件
   useEffect(() => {
