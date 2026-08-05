@@ -57,12 +57,12 @@ export default function App() {
     const unlisteners: Promise<() => void>[] = [];
     import("@tauri-apps/api/event").then(({ listen }) => {
       const handlers: [string, () => void][] = [
-        ["menu://file.new", () => newDoc()],
-        ["menu://file.open", () => openDoc()],
-        ["menu://file.save", () => saveDoc()],
-        ["menu://file.save_as", () => saveAsDoc()],
-        ["menu://file.export_html", () => exportCurrent("html")],
-        ["menu://file.export_pdf", () => exportCurrent("pdf")],
+        ["menu://file_new", () => newDoc()],
+        ["menu://file_open", () => openDoc()],
+        ["menu://file_save", () => saveDoc()],
+        ["menu://file_save_as", () => saveAsDoc()],
+        ["menu://file_export_html", () => exportCurrent("html")],
+        ["menu://file_export_pdf", () => exportCurrent("pdf")],
       ];
       handlers.forEach(([evt, fn]) => unlisteners.push(listen(evt, fn)));
     });

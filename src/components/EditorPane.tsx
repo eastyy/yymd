@@ -17,6 +17,7 @@ import { slashMenuPlugin } from "../plugins/slash-menu";
 import { floatingToolbarPlugin } from "../plugins/floating-toolbar";
 import { useAppStore } from "../store/useAppStore";
 import { setCurrentEditor } from "../lib/editorRef";
+import { dlog } from "../lib/debugLog";
 import { syncStats, scheduleAutoSave } from "../lib/fileActions";
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -59,6 +60,7 @@ function MilkdownInner() {
     if (!loading) {
       const editor = get() ?? null;
       setCurrentEditor(editor);
+      dlog("editor instance ready");
       return () => setCurrentEditor(null);
     }
   }, [loading, get]);

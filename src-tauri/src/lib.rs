@@ -12,6 +12,21 @@ pub struct FileEntry {
 }
 
 #[tauri::command]
+fn debug_log(msg: String) -> Result<(), String> {
+    if !cfg!(debug_assertions) {
+        return Ok(());
+    }
+    use std::io::Write;
+    let mut f = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("/tmp/yymd-webview.log")
+        .map_err(|e| e.to_string())?;
+    writeln!(f, "{msg}").map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
 fn read_text_file(path: String) -> Result<String, String> {
     fs::read_to_string(&path).map_err(|e| format!("读取失败 {}: {}", path, e))
 }
@@ -191,7 +206,8 @@ pub fn run() {
         .on_menu_event(|app, event| {
             let id = event.id().as_ref();
             if id.starts_with("file.") {
-                let _ = app.emit(&format!("menu://{}", id), ());
+                let name = format!("menu://{}", id.replace('.', "_"));
+                let _ = app.emit(&name, ());
             }
         })
         .invoke_handler(tauri::generate_handler![
@@ -202,7 +218,8 @@ pub fn run() {
             save_settings,
             show_in_folder,
             save_asset,
-            list_files_recursive
+            list_files_recursive,
+            debug_log
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

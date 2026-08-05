@@ -5,11 +5,14 @@
  * - 语法错误时回退显示源码,不阻断编辑
  * - markdown 往返:```mermaid 围栏代码块
  */
-import { $nodeSchema, $inputRule, $remark, $view } from "@milkdown/utils";
+import { $nodeSchema, $inputRule, $remark, $view, $prose } from "@milkdown/utils";
 import { InputRule } from "@milkdown/prose/inputrules";
+import { Plugin } from "@milkdown/prose/state";
+import { newlineInCode, exitCode } from "@milkdown/prose/commands";
 import type { MilkdownPlugin } from "@milkdown/ctx";
 import mermaid from "mermaid";
 import { useAppStore } from "../store/useAppStore";
+import { dlog } from "./debugLog";
 
 let identitySeq = 0;
 let renderSeq = 0;
@@ -24,8 +27,10 @@ export const diagramSchema = $nodeSchema("diagram", () => ({
   content: "text*",
   group: "block",
   marks: "",
+  code: true,
   defining: true,
   isolating: true,
+  whitespace: "pre",
   attrs: { identity: { default: "" } },
   parseDOM: [
     {
@@ -87,6 +92,8 @@ export const diagramInputRule = $inputRule((ctx) =>
 /* ---------- nodeView:源码可编辑 + SVG 实时渲染 ---------- */
 export const diagramView = $view(diagramSchema.node, () => {
   return (node, view, getPos) => {
+    const inst = ++renderSeq;
+    dlog(`view created #${inst}`);
     const container = document.createElement("div");
     container.className = "diagram";
     const svgBox = document.createElement("div");
@@ -101,6 +108,7 @@ export const diagramView = $view(diagramSchema.node, () => {
     let lastText: string | null = null;
 
     async function render(code: string) {
+      dlog(`diagram render start len=${code.length}`);
       if (!code.trim()) {
         svgBox.innerHTML = "";
         svgBox.classList.remove("diagram-error");
@@ -118,17 +126,20 @@ export const diagramView = $view(diagramSchema.node, () => {
         svgBox.innerHTML = svg;
         svgBox.classList.remove("diagram-error");
         svgBox.removeAttribute("title");
+        dlog(`diagram render OK svgLen=${svg.length}`);
       } catch (e) {
         const errEl = document.getElementById(id);
         if (errEl) errEl.remove();
         svgBox.textContent = code;
         svgBox.classList.add("diagram-error");
         svgBox.title = e instanceof Error ? e.message : String(e);
+        dlog(`diagram render ERROR: ${e instanceof Error ? e.message : String(e)}`);
       }
     }
 
     function schedule(code: string) {
       lastText = code;
+      dlog(`schedule: ${JSON.stringify(code.slice(0, 100))}`);
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => void render(code), 300);
     }
@@ -159,6 +170,11 @@ export const diagramView = $view(diagramSchema.node, () => {
     return {
       dom: container,
       contentDOM: src,
+      // 忽略 SVG 渲染区/容器属性等 contentDOM 之外的 DOM 变更,
+      // 否则会标记 NODE_DIRTY 导致 nodeView 被反复销毁重建(死循环)
+      ignoreMutation(mutation) {
+        return !src.contains(mutation.target as Node);
+      },
       update(updated) {
         if (updated.type.name !== "diagram") return false;
         currentNode = updated;
@@ -168,6 +184,7 @@ export const diagramView = $view(diagramSchema.node, () => {
         return true;
       },
       destroy() {
+        dlog(`view destroy #${inst}`);
         if (timer) clearTimeout(timer);
         unsub();
         document.removeEventListener("mousedown", onDocMouseDown);
@@ -176,9 +193,33 @@ export const diagramView = $view(diagramSchema.node, () => {
   };
 });
 
+/* ---------- 键位:diagram 内 Enter 插入换行,Mod-Enter 退出 ---------- */
+export const diagramKeymap = $prose(
+  () =>
+    new Plugin({
+      props: {
+        handleKeyDown(view, event) {
+          if (event.key !== "Enter") return false;
+          const { $from } = view.state.selection;
+          let inside = false;
+          for (let d = $from.depth; d > 0; d--) {
+            if ($from.node(d).type.name === "diagram") {
+              inside = true;
+              break;
+            }
+          }
+          if (!inside) return false;
+          if (event.metaKey || event.ctrlKey) return exitCode(view.state, view.dispatch);
+          return newlineInCode(view.state, view.dispatch);
+        },
+      },
+    }),
+);
+
 export const diagramPlugin = [
   remarkDiagram,
   diagramSchema,
   diagramInputRule,
+  diagramKeymap,
   diagramView,
 ] as unknown as MilkdownPlugin[];

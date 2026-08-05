@@ -187,6 +187,11 @@
   text-align: center;
 }
 
+/* ProseMirror 标准白空格:保留文本中的换行与连续空格 */
+.ProseMirror {
+  white-space: pre-wrap;
+}
+
 /* 图表 */
 .ProseMirror .diagram {
   margin: 1em 0;
