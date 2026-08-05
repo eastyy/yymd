@@ -139,7 +139,6 @@ export const diagramView = $view(diagramSchema.node, () => {
 
     function schedule(code: string) {
       lastText = code;
-      dlog(`schedule: ${JSON.stringify(code.slice(0, 100))}`);
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => void render(code), 300);
     }

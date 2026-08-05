@@ -15,6 +15,8 @@
   (packet / architecture / kanban / radar / block-beta / timeline / mindmap / xychart 等)
   - 输入 ` ```mermaid ` 立即创建图表节点,点击即可就地编辑源码,失焦后只显示渲染结果
   - 语法错误回退显示源码;主题切换自动重渲染;导出 HTML 内联 SVG
+  - 运行时渲染已验证:节点 schema `whitespace:"pre"` 保留换行、`code:true` 支持 Enter 换行、
+    `ignoreMutation` 消除 nodeView 重建死循环(渲染循环已修复,真实 WebView 中 SVG 渲染成功)
 - [x] 源码模式切换(`Cmd/Ctrl + /`)
 - [x] 原生应用菜单(文件/编辑)+ 全局快捷键(`Cmd+S/O/N`)
 - [x] 文件打开 / 保存 / 另存为(原生对话框)
@@ -47,10 +49,13 @@
 
 ## 🧪 验证状态
 - TypeScript:`tsc --noEmit` ✅ 0 error
-- 单元测试:vitest **36 passed**(大纲解析、字数统计、导出、主题注册表、mermaid v11 最新语法解析、diagram 节点管道端到端)
+- 单元测试:vitest **37 passed**(大纲解析、字数统计、导出、主题注册表、mermaid v11 最新语法解析、
+  diagram 节点管道端到端、输入规则+Enter 换行模拟)
 - Rust:`cargo check` ✅
 - 完整构建:`cargo tauri build --debug` ✅(Yymd.app + DMG,含全部功能)
 - 运行时:启动二进制存活、无错误日志、编辑器(含斜杠菜单/浮动工具栏)初始化正常 ✅
+- 运行时 mermaid:真实 WebView 日志确认 render OK(svgLen≈14.7KB),无重建循环、无未处理异常 ✅
+  (调试通道:`debug_log` Rust 命令 → `/tmp/yymd-webview.log`,仅 debug 构建)
 - Windows 构建:已配置 GitHub Actions(推 `v*` tag 触发)
 
 ## 🏗 架构
