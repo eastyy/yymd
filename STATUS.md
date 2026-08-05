@@ -41,6 +41,8 @@
   其他文件交给系统应用、http(s) 外部链接用浏览器打开(新增 `open_external` 命令)
 - [x] **YAML frontmatter**:文档开头 `---` 块解析为可编辑节点(remark-frontmatter),带标签样式,
   自定义 yaml 序列化 handler 保证往返一致
+- [x] **表格浮动工具栏(Typora 式)**:光标进入表格时上方出现按钮——左/右插列、上/下插行、删行、删列、删表格;
+  基于 prosemirror-tables 命令,表头切换因 milkdown gfm 表格 schema(首行强制表头)限制已移除
 
 ## 📋 后续路线图
 - [ ] Word / LaTeX 导出(Pandoc 集成)
@@ -53,8 +55,9 @@
 
 ## 🧪 验证状态
 - TypeScript:`tsc --noEmit` ✅ 0 error
-- 单元测试:vitest **50 passed**(大纲解析、字数统计、导出、主题注册表、mermaid v11 最新语法解析、
-  diagram 节点管道端到端、输入规则+Enter 换行模拟、链接/路径解析 11 例、frontmatter 往返)
+- 单元测试:vitest **51 passed**(大纲解析、字数统计、导出、主题注册表、mermaid v11 最新语法解析、
+  diagram 节点管道端到端、输入规则+Enter 换行模拟、链接/路径解析 11 例、frontmatter 往返、
+  表格命令集成)
 - Rust:`cargo check` ✅
 - 完整构建:`cargo tauri build --debug` ✅(Yymd.app + DMG,含全部功能)
 - 运行时:启动二进制存活、无错误日志、编辑器(含斜杠菜单/浮动工具栏)初始化正常 ✅
