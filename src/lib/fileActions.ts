@@ -79,17 +79,6 @@ export async function saveAsDoc(): Promise<void> {
   setDocTitle(displayName(path), false);
 }
 
-let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
-
-/** 防抖自动保存(仅在已存在文件路径时生效) */
-export function scheduleAutoSave(delay = 1500) {
-  if (!useAppStore.getState().filePath) return;
-  if (autoSaveTimer) clearTimeout(autoSaveTimer);
-  autoSaveTimer = setTimeout(() => {
-    void saveDoc();
-  }, delay);
-}
-
 /** 导出当前文档为 HTML / PDF(需在 WYSIWYG 视图) */
 export function exportCurrent(kind: "html" | "pdf") {
   const state = useAppStore.getState();

@@ -23,7 +23,7 @@ import { tableToolbarPlugin } from "../plugins/table-toolbar";
 import { useAppStore } from "../store/useAppStore";
 import { setCurrentEditor } from "../lib/editorRef";
 import { dlog } from "../lib/debugLog";
-import { syncStats, scheduleAutoSave } from "../lib/fileActions";
+import { syncStats } from "../lib/fileActions";
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -59,7 +59,6 @@ function MilkdownInner() {
           const s = useAppStore.getState();
           s.setMarkdown(md);
           s.setDirty(true);
-          scheduleAutoSave();
           if (debounceTimer) clearTimeout(debounceTimer);
           debounceTimer = setTimeout(() => syncStats(md), 300);
         });

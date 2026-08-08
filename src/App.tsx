@@ -3,6 +3,7 @@ import { useAppStore, type ThemeName } from "./store/useAppStore";
 import { isTauri, loadSettings, saveSettings } from "./lib/bridge";
 import { newDoc, openDoc, openFile, saveDoc, saveAsDoc, toggleSourceMode, syncStats, exportCurrent } from "./lib/fileActions";
 import { WELCOME_DOC } from "./lib/welcome";
+import { dlog } from "./lib/debugLog";
 import Sidebar from "./components/Sidebar";
 import EditorPane from "./components/EditorPane";
 import SourceEditor from "./components/SourceEditor";
@@ -95,25 +96,38 @@ export default function App() {
   useEffect(() => {
     if (!isTauri) return;
     let unlisten: (() => void) | null = null;
+    let cancelled = false;
+    let confirming = false;
     import("@tauri-apps/api/window").then(async ({ getCurrentWindow }) => {
       const win = getCurrentWindow();
-      unlisten = await win.onCloseRequested(async (event) => {
+      const off = await win.onCloseRequested(async (event) => {
+        dlog(`close-requested dirty=${useAppStore.getState().dirty} confirming=${confirming}`);
         if (!useAppStore.getState().dirty) return;
         event.preventDefault();
-        const { ask } = await import("@tauri-apps/plugin-dialog");
-        const shouldSave = await ask("有未保存的更改,退出前是否保存?", {
+        if (confirming) return;
+        confirming = true;
+        const { message } = await import("@tauri-apps/plugin-dialog");
+        const choice = await message("有未保存的更改,退出前是否保存?", {
           title: "Yymd",
           kind: "warning",
-          okLabel: "保存并退出",
-          cancelLabel: "取消",
+          buttons: { yes: "保存并退出", no: "不保存", cancel: "取消" },
         });
-        if (shouldSave) {
+        const c = String(choice);
+        dlog(`close dialog choice=${choice}`);
+        if (c === "保存并退出" || c.toLowerCase() === "yes") {
           await saveDoc();
           await win.destroy();
+        } else if (c === "不保存" || c.toLowerCase() === "no") {
+          await win.destroy();
+        } else {
+          confirming = false;
         }
       });
+      if (cancelled) off();
+      else unlisten = off;
     });
     return () => {
+      cancelled = true;
       if (unlisten) unlisten();
     };
   }, []);

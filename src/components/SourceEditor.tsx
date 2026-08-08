@@ -1,5 +1,5 @@
 import { useAppStore } from "../store/useAppStore";
-import { syncStats, scheduleAutoSave } from "../lib/fileActions";
+import { syncStats } from "../lib/fileActions";
 
 /** 源码模式:等宽字体编辑原始 Markdown */
 export default function SourceEditor() {
@@ -16,7 +16,6 @@ export default function SourceEditor() {
         onChange={(e) => {
           setMarkdown(e.target.value);
           setDirty(true);
-          scheduleAutoSave();
           syncStats(e.target.value);
         }}
       />

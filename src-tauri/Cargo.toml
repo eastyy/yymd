@@ -1,6 +1,6 @@
 [package]
 name = "yymd"
-version = "0.1.0"
+version = "0.1.1"
 description = "Yymd - A Typora-like Markdown Editor"
 authors = ["yymd"]
 edition = "2021"
