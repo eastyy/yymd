@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { useAppStore, type ThemeName } from "./store/useAppStore";
 import { isTauri, loadSettings, saveSettings } from "./lib/bridge";
 import { newDoc, openDoc, openFile, saveDoc, saveAsDoc, toggleSourceMode, syncStats, exportCurrent } from "./lib/fileActions";
+import { planDroppedPaths } from "./lib/dropPaths";
+import { pathIsDir } from "./lib/bridge";
+import { insertImageFromPath, editorPosAtWindowPoint } from "./lib/imagePlugin";
 import { WELCOME_DOC } from "./lib/welcome";
 import { dlog } from "./lib/debugLog";
 import Sidebar from "./components/Sidebar";
@@ -121,6 +124,46 @@ export default function App() {
           await win.destroy();
         } else {
           confirming = false;
+        }
+      });
+      if (cancelled) off();
+      else unlisten = off;
+    });
+    return () => {
+      cancelled = true;
+      if (unlisten) unlisten();
+    };
+  }, []);
+
+  // 拖拽打开:拖 .md 打开文件、拖文件夹设为工作区、拖图片插入编辑器
+  useEffect(() => {
+    if (!isTauri) return;
+    let unlisten: (() => void) | null = null;
+    let cancelled = false;
+    import("@tauri-apps/api/window").then(async ({ getCurrentWindow }) => {
+      const win = getCurrentWindow();
+      const off = await win.onDragDropEvent(async (event) => {
+        if (event.payload.type !== "drop") return;
+        const paths = event.payload.paths ?? [];
+        if (!paths.length) return;
+        const dirSet = new Set<string>();
+        for (const p of paths) {
+          if (await pathIsDir(p)) dirSet.add(p);
+        }
+        const plan = planDroppedPaths(paths, dirSet);
+        dlog(`drop: md=${plan.markdown} dir=${plan.directory} images=${plan.images.length}`);
+        if (plan.directory) useAppStore.getState().setRootDir(plan.directory);
+        if (plan.markdown) {
+          await openFile(plan.markdown);
+          return;
+        }
+        if (plan.images.length) {
+          const scale = await win.scaleFactor().catch(() => 1);
+          const pt = "position" in event.payload ? event.payload.position : undefined;
+          const pos = pt ? editorPosAtWindowPoint(pt.x, pt.y, scale) : undefined;
+          for (const img of plan.images) {
+            await insertImageFromPath(img, pos);
+          }
         }
       });
       if (cancelled) off();

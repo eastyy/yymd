@@ -67,6 +67,17 @@ export async function removePath(path: string): Promise<void> {
   await invoke("remove_path", { path });
 }
 
+/** 路径是否为目录(不存在返回 false) */
+export async function pathIsDir(path: string): Promise<boolean> {
+  if (!isTauri) return false;
+  return invoke<boolean>("path_is_dir", { path }).catch(() => false);
+}
+
+/** 读文件为 base64(图片拖拽用) */
+export async function readFileBase64(path: string): Promise<string> {
+  return invoke<string>("read_file_base64", { path });
+}
+
 /** 把 base64 图片写入指定目录,返回最终绝对路径 */
 export async function saveAsset(
   dir: string,

@@ -27,6 +27,18 @@ fn debug_log(msg: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+fn path_is_dir(path: String) -> bool {
+    fs::metadata(&path).map(|m| m.is_dir()).unwrap_or(false)
+}
+
+#[tauri::command]
+fn read_file_base64(path: String) -> Result<String, String> {
+    use base64::Engine;
+    let bytes = fs::read(&path).map_err(|e| format!("读取失败 {}: {}", path, e))?;
+    Ok(base64::engine::general_purpose::STANDARD.encode(&bytes))
+}
+
+#[tauri::command]
 fn read_text_file(path: String) -> Result<String, String> {
     fs::read_to_string(&path).map_err(|e| format!("读取失败 {}: {}", path, e))
 }
@@ -253,6 +265,8 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             read_text_file,
+            path_is_dir,
+            read_file_base64,
             write_text_file,
             list_dir,
             load_settings,
