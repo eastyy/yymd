@@ -1,6 +1,7 @@
 import { useAppStore } from "../store/useAppStore";
 import { THEMES } from "../lib/themes";
 import { toggleSourceMode, exportCurrent } from "../lib/fileActions";
+import GoalControl from "./GoalControl";
 
 export default function StatusBar() {
   const { wordCount, charCount, dirty, viewMode, theme, setTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriter, toggleSidebar } =
@@ -14,6 +15,7 @@ export default function StatusBar() {
         </button>
         <span className="status-item">{wordCount} 字</span>
         <span className="status-item">{charCount} 字符</span>
+        <GoalControl />
         <span className={`status-item ${dirty ? "dirty" : ""}`}>
           {dirty ? "● 未保存" : "已保存"}
         </span>

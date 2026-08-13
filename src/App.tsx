@@ -20,6 +20,7 @@ interface Settings {
   recent?: string[];
   lastFile?: string;
   fontSize?: number;
+  wordTarget?: number;
 }
 
 export default function App() {
@@ -55,6 +56,7 @@ export default function App() {
           if (cfg.theme) setTheme(cfg.theme);
           if (Array.isArray(cfg.recent)) useAppStore.getState().setRecentFiles(cfg.recent);
           if (typeof cfg.fontSize === "number") setFontSize(cfg.fontSize);
+          if (typeof cfg.wordTarget === "number") useAppStore.getState().setWordTarget(cfg.wordTarget);
           if (cfg.lastFile) {
             try {
               await openFile(cfg.lastFile);
@@ -70,10 +72,11 @@ export default function App() {
   // 持久化设置(主题 + 最近文件 + 当前文件 + 字号)
   const recentFiles = useAppStore((s) => s.recentFiles);
   const filePath = useAppStore((s) => s.filePath);
+  const wordTarget = useAppStore((s) => s.wordTarget);
   useEffect(() => {
     if (isTauri)
-      saveSettings({ theme, recent: recentFiles, lastFile: filePath ?? undefined, fontSize }).catch(() => {});
-  }, [theme, recentFiles, filePath, fontSize]);
+      saveSettings({ theme, recent: recentFiles, lastFile: filePath ?? undefined, fontSize, wordTarget }).catch(() => {});
+  }, [theme, recentFiles, filePath, fontSize, wordTarget]);
 
   // 监听原生菜单事件
   useEffect(() => {

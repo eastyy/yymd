@@ -250,6 +250,36 @@ body {
 .status-btn[data-active="true"] {
   color: var(--accent);
 }
+
+/* ---------- 字数目标 ---------- */
+.status-btn.goal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-btn.goal .goal-bar {
+  display: inline-block;
+  width: 60px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border-light);
+  overflow: hidden;
+}
+.status-btn.goal .goal-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+.goal-input {
+  width: 110px;
+  font-size: 12px;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+}
 .seg {
   display: inline-flex;
   border: 1px solid var(--border);

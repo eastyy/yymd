@@ -22,6 +22,7 @@ interface AppState {
   globalSearchOpen: boolean;
   recentFiles: string[];
   fontSize: number;
+  wordTarget: number;
 
   setFilePath: (p: string | null) => void;
   setDirty: (d: boolean) => void;
@@ -40,6 +41,7 @@ interface AppState {
   setRecentFiles: (files: string[]) => void;
   addRecent: (path: string) => void;
   setFontSize: (n: number) => void;
+  setWordTarget: (n: number) => void;
   reset: () => void;
 }
 
@@ -61,6 +63,7 @@ export const useAppStore = create<AppState>((set) => ({
   globalSearchOpen: false,
   recentFiles: [],
   fontSize: 16,
+  wordTarget: 0,
 
   setFilePath: (p) => set({ filePath: p }),
   setDirty: (d) => set({ dirty: d }),
@@ -82,6 +85,7 @@ export const useAppStore = create<AppState>((set) => ({
       recentFiles: [path, ...s.recentFiles.filter((p) => p !== path)].slice(0, 10),
     })),
   setFontSize: (n) => set({ fontSize: Math.min(28, Math.max(12, Math.round(n))) }),
+  setWordTarget: (n) => set({ wordTarget: Math.max(0, Math.floor(Number.isFinite(n) ? n : 0)) }),
   reset: () => set({ filePath: null, dirty: false, markdown: "" }),
 }));
 
