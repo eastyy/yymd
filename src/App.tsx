@@ -4,7 +4,7 @@ import { isTauri, loadSettings, saveSettings } from "./lib/bridge";
 import { newDoc, openDoc, openFile, saveDoc, saveAsDoc, toggleSourceMode, syncStats, exportCurrent } from "./lib/fileActions";
 import { planDroppedPaths } from "./lib/dropPaths";
 import { pathIsDir } from "./lib/bridge";
-import { insertImageFromPath, editorPosAtWindowPoint } from "./lib/imagePlugin";
+import { insertImageFromPath } from "./lib/imagePlugin";
 import { WELCOME_DOC } from "./lib/welcome";
 import { dlog } from "./lib/debugLog";
 import Sidebar from "./components/Sidebar";
@@ -161,11 +161,9 @@ export default function App() {
           return;
         }
         if (plan.images.length) {
-          const scale = await win.scaleFactor().catch(() => 1);
-          const pt = "position" in event.payload ? event.payload.position : undefined;
-          const pos = pt ? editorPosAtWindowPoint(pt.x, pt.y, scale) : undefined;
+          // 插入到当前光标位置
           for (const img of plan.images) {
-            await insertImageFromPath(img, pos);
+            await insertImageFromPath(img);
           }
         }
       });
