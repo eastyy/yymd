@@ -13,6 +13,7 @@ import { imagePlugin } from "../lib/imagePlugin";
 import { searchPlugin } from "../lib/searchPlugin";
 import { typewriterPlugin, focusModePlugin } from "../lib/editModePlugins";
 import { diagramPlugin } from "../lib/diagramPlugin";
+import { tocPlugin } from "../lib/tocPlugin";
 import { linkPlugin } from "../lib/linkPlugin";
 import { frontmatterPlugin } from "../lib/frontmatterPlugin";
 import { autoPairPlugin } from "../lib/autoPairPlugin";
@@ -44,6 +45,7 @@ function MilkdownInner() {
       .use(clipboard)
       .use(math)
       .use(diagramPlugin)
+      .use(tocPlugin)
       .use(prism)
       .use(imagePlugin)
       .use(searchPlugin)
