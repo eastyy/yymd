@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import { useAppStore, type ThemeName } from "./store/useAppStore";
 import { isTauri, loadSettings, saveSettings } from "./lib/bridge";
 import { newDoc, openDoc, openFile, saveDoc, saveAsDoc, toggleSourceMode, syncStats, exportCurrent } from "./lib/fileActions";
@@ -77,6 +78,47 @@ export default function App() {
     if (isTauri)
       saveSettings({ theme, recent: recentFiles, lastFile: filePath ?? undefined, fontSize, wordTarget }).catch(() => {});
   }, [theme, recentFiles, filePath, fontSize, wordTarget]);
+
+  // 系统文件关联:双击 .md 文件用 Yymd 打开(macOS Apple Events / Windows·Linux 命令行参数)
+  useEffect(() => {
+    if (!isTauri) return;
+    let cancelled = false;
+    let unlisten: (() => void) | null = null;
+
+    const openIfNew = (p: string) => {
+      if (!p || useAppStore.getState().filePath === p) return;
+      void openFile(p);
+    };
+
+    import("@tauri-apps/api/window")
+      .then(({ getCurrentWindow }) => getCurrentWindow().listen<string>("yymd://open-file", (e) => openIfNew(e.payload)))
+      .then((off) => {
+        if (cancelled) off();
+        else unlisten = off;
+      })
+      .catch(() => {});
+
+    // 启动时系统传入的待打开文件(Rust 侧 pending,前端就绪后取走)
+    (async () => {
+      for (let i = 0; i < 20 && !cancelled; i++) {
+        try {
+          const p = await invoke<string | null>("take_pending_open_path");
+          if (p) {
+            openIfNew(p);
+            return;
+          }
+        } catch {
+          /* ignore */
+        }
+        await new Promise((r) => setTimeout(r, 250));
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      if (unlisten) unlisten();
+    };
+  }, []);
 
   // 监听原生菜单事件
   useEffect(() => {

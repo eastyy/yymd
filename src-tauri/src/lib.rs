@@ -2,7 +2,65 @@ use serde::Serialize;
 use std::fs;
 use std::path::Path;
 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem, Submenu};
-use tauri::Emitter;
+use tauri::{Emitter, Manager};
+
+/// 待打开文件路径(应用启动时由系统传入,前端就绪后取走)
+#[derive(Default)]
+struct PendingOpen(std::sync::Mutex<Option<String>>);
+
+const OPEN_FILE_EVENT: &str = "yymd://open-file";
+
+fn is_markdown_path(p: &str) -> bool {
+    let lower = p.to_lowercase();
+    (lower.ends_with(".md") || lower.ends_with(".markdown") || lower.ends_with(".mdown"))
+        && Path::new(p).exists()
+}
+
+/// 投递打开请求:存入 pending 供前端轮询,同时延迟 emit(兼容前端已就绪的情况)
+fn deliver_open_path(app: &tauri::AppHandle, path: String) {
+    if let Ok(mut g) = app.state::<PendingOpen>().0.lock() {
+        *g = Some(path.clone());
+    }
+    let h = app.clone();
+    std::thread::spawn(move || {
+        std::thread::sleep(std::time::Duration::from_millis(600));
+        let _ = h.emit(OPEN_FILE_EVENT, path);
+    });
+}
+
+#[tauri::command]
+fn take_pending_open_path(state: tauri::State<PendingOpen>) -> Option<String> {
+    state.0.lock().ok().and_then(|mut g| g.take())
+}
+
+/// macOS:尝试将 Yymd 设为 Markdown 文件的默认打开方式(失败不影响主流程)
+#[cfg(target_os = "macos")]
+fn register_default_markdown_handler() {
+    type CFStringRef = *const std::ffi::c_void;
+    #[link(name = "CoreFoundation", kind = "framework")]
+    extern "C" {
+        fn CFStringCreateWithCString(alloc: *const std::ffi::c_void, c: *const i8, encoding: u32) -> CFStringRef;
+        fn CFRelease(cf: CFStringRef);
+    }
+    #[link(name = "LaunchServices", kind = "framework")]
+    extern "C" {
+        fn LSSetDefaultRoleHandlerForContentType(ct: CFStringRef, role: u32, bundle: CFStringRef) -> i32;
+    }
+    unsafe {
+        let utf8 = 0x0800_0100u32;
+        let ct = CFStringCreateWithCString(std::ptr::null(), c"net.daringfireball.markdown".as_ptr(), utf8);
+        let bid = CFStringCreateWithCString(std::ptr::null(), c"com.yymd.app".as_ptr(), utf8);
+        if !ct.is_null() && !bid.is_null() {
+            let _ = LSSetDefaultRoleHandlerForContentType(ct, 0xFFFF_FFFF, bid);
+        }
+        if !ct.is_null() {
+            CFRelease(ct);
+        }
+        if !bid.is_null() {
+            CFRelease(bid);
+        }
+    }
+}
 
 #[derive(Serialize, Clone)]
 pub struct FileEntry {
@@ -251,9 +309,25 @@ fn build_menu(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+            // 已有实例运行时再次双击 .md:把文件路径转发给主实例并聚焦窗口
+            if let Some(p) = args.iter().skip(1).find(|a| is_markdown_path(a)) {
+                deliver_open_path(app, p.clone());
+            }
+            if let Some(w) = app.get_webview_window("main") {
+                let _ = w.set_focus();
+            }
+        }))
         .plugin(tauri_plugin_dialog::init())
+        .manage(PendingOpen::default())
         .setup(|app| {
             build_menu(app.handle()).expect("failed to build menu");
+            #[cfg(target_os = "macos")]
+            register_default_markdown_handler();
+            // Windows/Linux:双击 .md 启动时路径作为命令行参数传入
+            if let Some(p) = std::env::args().skip(1).find(|a| is_markdown_path(a)) {
+                deliver_open_path(app.handle(), p);
+            }
             Ok(())
         })
         .on_menu_event(|app, event| {
@@ -279,8 +353,27 @@ pub fn run() {
             remove_path,
             save_asset,
             list_files_recursive,
+            take_pending_open_path,
             debug_log
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application")
+        .run(|app_handle, event| {
+            // macOS:双击 .md / 拖到 Dock 图标,通过 Apple Events 传入(运行时与启动时)
+            #[cfg(target_os = "macos")]
+            if let tauri::RunEvent::Opened { urls } = &event {
+                for u in urls {
+                    if u.scheme() == "file" {
+                        if let Ok(path) = u.to_file_path() {
+                            let s = path.to_string_lossy().to_string();
+                            if is_markdown_path(&s) {
+                                deliver_open_path(app_handle, s);
+                            }
+                        }
+                    }
+                }
+            }
+            #[cfg(not(target_os = "macos"))]
+            let _ = (app_handle, event);
+        });
 }
