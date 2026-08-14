@@ -49,7 +49,7 @@
           "markdown",
           "mdown"
         ],
-        "description": "Markdown 文档",
+        "description": "Markdown Document",
         "role": "Editor",
         "mimeType": "text/markdown"
       }
