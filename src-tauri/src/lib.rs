@@ -42,7 +42,7 @@ fn register_default_markdown_handler() {
         fn CFStringCreateWithCString(alloc: *const std::ffi::c_void, c: *const i8, encoding: u32) -> CFStringRef;
         fn CFRelease(cf: CFStringRef);
     }
-    #[link(name = "LaunchServices", kind = "framework")]
+    #[link(name = "CoreServices", kind = "framework")]
     extern "C" {
         fn LSSetDefaultRoleHandlerForContentType(ct: CFStringRef, role: u32, bundle: CFStringRef) -> i32;
     }
