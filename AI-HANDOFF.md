@@ -9,8 +9,8 @@
 技术栈:**Tauri 2(Rust)+ React 18 + Vite 5 + TypeScript + Milkdown 7.5.9(ProseMirror)+ zustand**。
 主平台 Windows,开发机是 macOS,通过 GitHub Actions 出多平台包。
 
-当前状态:**v0.1.x 功能可用**,debug 包构建通过(Yymd.app + DMG),60/60 单元测试绿,
-`tsc --noEmit` 零错误。共 30+ 次提交,git 干净。
+当前状态:**v0.2.x 已发布**(GitHub Release 含 Windows / macOS / Linux 安装包,CI 自动产出),
+78/78 单元测试绿,`tsc --noEmit` 零错误。
 
 ## 2. 硬性约束(用户反复强调)
 
@@ -26,7 +26,7 @@
 cd /Users/yy/yymd
 npm install                          # 依赖(已装好,一般不用)
 npx tsc --noEmit                     # TS 类型检查,必须零错误
-npx vitest run                       # 单元测试(60 个,jsdom 环境)
+npx vitest run                       # 单元测试(78 个,jsdom 环境)
 cd src-tauri && cargo check          # Rust 检查
 cd /Users/yy/yymd
 npm run tauri build -- --debug       # 完整桌面包构建(约 2–3 分钟增量)
@@ -101,6 +101,15 @@ tableToolbar → linkPlugin → listener。
 11. **测试环境**:需要 DOM 的用 `// @vitest-environment jsdom` 头;mermaid.parse 在 jsdom 可用。
 12. **`$inputRule`** 返回真正的 `new InputRule(regex, handler)`(从 `@milkdown/prose/inputrules`),
     handler 返回 `null` 表示不处理。
+13. **`dragDropEnabled: true`(tauri.conf.json)**:启用后 OS 文件拖放被 Tauri 原生拦截,
+    DOM `drop` 事件不再触发。文件拖放统一走 `win.onDragDropEvent`(App.tsx),
+    图片插入走 `insertImageFromPath`。不要再依赖 DOM drop 处理文件。
+14. **文件关联**:声明在 `tauri.conf.json` 的 `bundle.fileAssociations`(写入 Info.plist),
+    运行时接收:macOS `RunEvent::Opened` / Windows·Linux 命令行参数 / single-instance 转发。
+    前端统一入口:事件 `yymd://open-file` + 启动时轮询 `take_pending_open_path`。
+    只在打包应用中生效,`tauri dev` 测不了,验证用 `tauri build -- --debug` 装 dmg。
+15. **atom 节点输入规则**不能 `setBlockType`(要求 textblock),用 `replaceRangeWith` 整段替换
+    (参考 `tocPlugin.ts`)。
 
 ## 6. 工作流纪律
 
