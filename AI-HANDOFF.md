@@ -110,6 +110,8 @@ tableToolbar → linkPlugin → listener。
     只在打包应用中生效,`tauri dev` 测不了,验证用 `tauri build -- --debug` 装 dmg。
 15. **atom 节点输入规则**不能 `setBlockType`(要求 textblock),用 `replaceRangeWith` 整段替换
     (参考 `tocPlugin.ts`)。
+16. **Windows MSI 打包**:`tauri.conf.json` 里所有进 WiX 的字段(如 fileAssociations 的
+    description)不能用中文等非 ASCII 字符,否则 `light.exe` 直接失败。NSIS 不受影响。
 
 ## 6. 工作流纪律
 
