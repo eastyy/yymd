@@ -39,7 +39,7 @@
 - 导出 **HTML / PDF**(HTML 内联样式,可离线打开)
 
 ### 界面
-- 5 套主题:GitHub 浅色 / GitHub 深色 / 纸质 Newsprint / 夜间 Night / 悦读 Pixyll
+- 7 套主题:跟随系统 / GitHub 浅色 / GitHub 深色 / One Dark / 纸质 Newsprint / 夜间 Night / 悦读 Pixyll(“跟随系统”随 macOS 深浅色自动切换)
 - **字体缩放**(`⌘=` / `⌘-` / `⌘0` 复位),所见即所得与源码模式同步
 - **字数目标**:状态栏 🎯 设置目标字数,实时进度条 + 完成百分比
 - 中英文字数统计、原生应用菜单、关闭前未保存确认

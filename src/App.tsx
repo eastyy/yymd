@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { useAppStore, type ThemeName } from "./store/useAppStore";
+import { useAppStore, type ThemeName, type ResolvedTheme } from "./store/useAppStore";
 import { isTauri, loadSettings, saveSettings } from "./lib/bridge";
 import { newDoc, openDoc, openFile, saveDoc, saveAsDoc, toggleSourceMode, syncStats, exportCurrent } from "./lib/fileActions";
 import { planDroppedPaths } from "./lib/dropPaths";
 import { pathIsDir } from "./lib/bridge";
 import { insertImageFromPath } from "./lib/imagePlugin";
 import { WELCOME_DOC } from "./lib/welcome";
+import { effectiveTheme } from "./lib/systemTheme";
 import { dlog } from "./lib/debugLog";
 import Sidebar from "./components/Sidebar";
 import EditorPane from "./components/EditorPane";
@@ -36,10 +37,44 @@ export default function App() {
   const fontSize = useAppStore((s) => s.fontSize);
   const setFontSize = useAppStore((s) => s.setFontSize);
 
-  // 应用主题
+  // 跟随系统深浅色(system 主题用)
+  const [osDark, setOsDark] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia
+      ? window.matchMedia("(prefers-color-scheme: dark)").matches
+      : false,
+  );
   useEffect(() => {
-    document.body.dataset.theme = theme;
-  }, [theme]);
+    if (!isTauri) {
+      // 浏览器/测试环境:matchMedia
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      const onChange = () => setOsDark(mq.matches);
+      mq.addEventListener("change", onChange);
+      return () => mq.removeEventListener("change", onChange);
+    }
+    let cancelled = false;
+    let unlisten: (() => void) | null = null;
+    import("@tauri-apps/api/window")
+      .then(async ({ getCurrentWindow }) => {
+        const win = getCurrentWindow();
+        const t = await win.theme().catch(() => null);
+        if (!cancelled && t) setOsDark(t === "dark");
+        const off = await win.onThemeChanged(({ payload }) => setOsDark(payload === "dark"));
+        if (cancelled) off();
+        else unlisten = off;
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+      if (unlisten) unlisten();
+    };
+  }, []);
+
+  // 应用主题(system 解析为实际主题)
+  const resolved: ResolvedTheme = effectiveTheme(theme, osDark) as ResolvedTheme;
+  useEffect(() => {
+    document.body.dataset.theme = resolved;
+    useAppStore.getState().setEffectiveTheme(resolved);
+  }, [resolved]);
 
   // 应用编辑区字号
   useEffect(() => {

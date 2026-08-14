@@ -6,6 +6,7 @@ import "./styles/themes.css";
 import "./styles/themes/newsprint.css";
 import "./styles/themes/night.css";
 import "./styles/themes/pixyll.css";
+import "./styles/themes/one-dark.css";
 import "./styles/main.css";
 import "./styles/editor.css";
 import "katex/dist/katex.min.css";

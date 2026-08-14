@@ -1,0 +1,45 @@
+/* One Dark 主题(Atom 经典深色) */
+body[data-theme="one-dark"] {
+  --bg: #282c34;
+  --bg-secondary: #21252b;
+  --bg-sidebar: #21252b;
+  --text: #abb2bf;
+  --text-secondary: #828997;
+  --text-muted: #5c6370;
+  --border: #3b4048;
+  --border-light: #333842;
+  --accent: #61afef;
+  --accent-bg: #2c3f57;
+  --code-bg: #21252b;
+  --code-text: #abb2bf;
+  --blockquote-border: #3b4048;
+  --blockquote-text: #828997;
+  --table-border: #3b4048;
+  --table-stripe: #2c313a;
+  --selection: #3e4451;
+  --shadow: rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+
+/* One Dark 代码高亮(One Dark 配色) */
+body[data-theme="one-dark"] .token.property,
+body[data-theme="one-dark"] .token.tag,
+body[data-theme="one-dark"] .token.keyword {
+  color: #c678dd;
+}
+body[data-theme="one-dark"] .token.string,
+body[data-theme="one-dark"] .token.selector {
+  color: #98c379;
+}
+body[data-theme="one-dark"] .token.function,
+body[data-theme="one-dark"] .token.class-name {
+  color: #61afef;
+}
+body[data-theme="one-dark"] .token.number,
+body[data-theme="one-dark"] .token.boolean {
+  color: #d19a66;
+}
+body[data-theme="one-dark"] .token.comment {
+  color: #5c6370;
+  font-style: italic;
+}

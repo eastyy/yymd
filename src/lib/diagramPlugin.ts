@@ -12,14 +12,15 @@ import { newlineInCode, exitCode } from "@milkdown/prose/commands";
 import type { MilkdownPlugin } from "@milkdown/ctx";
 import mermaid from "mermaid";
 import { useAppStore } from "../store/useAppStore";
+import { isDarkThemeId } from "./systemTheme";
 import { dlog } from "./debugLog";
 
 let identitySeq = 0;
 let renderSeq = 0;
 
 function isDarkTheme(): boolean {
-  const t = useAppStore.getState().theme;
-  return t === "github-dark" || t === "night";
+  const t = useAppStore.getState().effectiveTheme;
+  return isDarkThemeId(t);
 }
 
 /* ---------- 节点 ---------- */
@@ -152,10 +153,10 @@ export const diagramView = $view(diagramSchema.node, () => {
     }
 
     // 主题切换时重渲染
-    let lastTheme = useAppStore.getState().theme;
+    let lastTheme = useAppStore.getState().effectiveTheme;
     const unsub = useAppStore.subscribe((s) => {
-      if (s.theme !== lastTheme) {
-        lastTheme = s.theme;
+      if (s.effectiveTheme !== lastTheme) {
+        lastTheme = s.effectiveTheme;
         if (lastText) void render(lastText);
       }
     });

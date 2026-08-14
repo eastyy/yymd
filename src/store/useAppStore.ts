@@ -2,7 +2,9 @@ import { create } from "zustand";
 
 export type ViewMode = "wysiwyg" | "source";
 export type SidebarTab = "files" | "outline";
-export type ThemeName = "github" | "github-dark" | "newsprint" | "night" | "pixyll";
+export type ThemeName = "system" | "github" | "github-dark" | "one-dark" | "newsprint" | "night" | "pixyll";
+/** 实际应用的主题(system 已解析后的结果) */
+export type ResolvedTheme = Exclude<ThemeName, "system">;
 
 interface AppState {
   filePath: string | null;
@@ -15,6 +17,8 @@ interface AppState {
   sidebarTab: SidebarTab;
   rootDir: string | null;
   theme: ThemeName;
+  /** system 解析后的实际主题,供 mermaid 等组件判断深浅 */
+  effectiveTheme: ResolvedTheme;
   focusMode: boolean;
   typewriterMode: boolean;
   searchOpen: boolean;
@@ -33,6 +37,7 @@ interface AppState {
   setSidebarTab: (t: SidebarTab) => void;
   setRootDir: (d: string | null) => void;
   setTheme: (t: ThemeName) => void;
+  setEffectiveTheme: (t: ResolvedTheme) => void;
   toggleFocusMode: () => void;
   toggleTypewriter: () => void;
   setSearchOpen: (v: boolean) => void;
@@ -56,6 +61,7 @@ export const useAppStore = create<AppState>((set) => ({
   sidebarTab: "outline",
   rootDir: null,
   theme: "github",
+  effectiveTheme: "github",
   focusMode: false,
   typewriterMode: false,
   searchOpen: false,
@@ -74,6 +80,7 @@ export const useAppStore = create<AppState>((set) => ({
   setSidebarTab: (t) => set({ sidebarTab: t, sidebarOpen: true }),
   setRootDir: (d) => set({ rootDir: d }),
   setTheme: (t) => set({ theme: t }),
+  setEffectiveTheme: (t) => set({ effectiveTheme: t }),
   toggleFocusMode: () => set((s) => ({ focusMode: !s.focusMode })),
   toggleTypewriter: () => set((s) => ({ typewriterMode: !s.typewriterMode })),
   setSearchOpen: (v) => set({ searchOpen: v }),
