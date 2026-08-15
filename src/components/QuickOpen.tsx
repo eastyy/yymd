@@ -19,6 +19,12 @@ export default function QuickOpen() {
   const rootDir = useAppStore((s) => s.rootDir);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
+  // query 变化时重置高亮项(渲染期调整,代替 effect 内 setState)
+  const [prevQuery, setPrevQuery] = useState(query);
+  if (prevQuery !== query) {
+    setPrevQuery(query);
+    setActive(0);
+  }
   const [files, setFiles] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -47,10 +53,6 @@ export default function QuickOpen() {
       .filter((p) => p.toLowerCase().includes(q))
       .slice(0, 30);
   }, [recentFiles, files, query]);
-
-  useEffect(() => {
-    setActive(0);
-  }, [query]);
 
   async function choose(path: string) {
     setQuickOpenOpen(false);

@@ -16,6 +16,18 @@ export default function GlobalSearch() {
   const [results, setResults] = useState<FileResult[] | null>(null);
   const [searching, setSearching] = useState(false);
   const [status, setStatus] = useState("");
+  // query 变化时同步切换搜索态/清空结果(渲染期调整,代替 effect 内 setState)
+  const [prevQuery, setPrevQuery] = useState(query);
+  if (prevQuery !== query) {
+    setPrevQuery(query);
+    if (!query.trim()) {
+      setResults(null);
+      setStatus("");
+      setSearching(false);
+    } else if (isTauri && rootDir) {
+      setSearching(true);
+    }
+  }
   const inputRef = useRef<HTMLInputElement>(null);
   const timer = useRef<number | null>(null);
 
@@ -26,12 +38,7 @@ export default function GlobalSearch() {
   useEffect(() => {
     if (timer.current) window.clearTimeout(timer.current);
     const q = query.trim();
-    if (!q || !isTauri || !rootDir) {
-      setResults(null);
-      setStatus("");
-      return;
-    }
-    setSearching(true);
+    if (!q || !isTauri || !rootDir) return;
     timer.current = window.setTimeout(async () => {
       try {
         const entries: DirEntry[] = await listFilesRecursive(rootDir, 800);

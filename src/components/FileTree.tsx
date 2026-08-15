@@ -32,6 +32,12 @@ export default function FileTree() {
   const [tree, setTree] = useState<TreeNode[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [menu, setMenu] = useState<MenuState | null>(null);
+  // rootDir 被清空时重置树(渲染期调整,代替 effect 内 setState)
+  const [prevRootDir, setPrevRootDir] = useState(rootDir);
+  if (prevRootDir !== rootDir) {
+    setPrevRootDir(rootDir);
+    if (!rootDir) setTree([]);
+  }
   const rootDirRef = useRef(rootDir);
   useEffect(() => {
     rootDirRef.current = rootDir;
@@ -48,9 +54,21 @@ export default function FileTree() {
   }, []);
 
   useEffect(() => {
-    if (rootDir) loadRoot(rootDir);
-    else setTree([]);
-  }, [rootDir, loadRoot]);
+    if (!rootDir) return;
+    let cancelled = false;
+    listDir(rootDir)
+      .then((entries) => {
+        if (cancelled) return;
+        setTree(entries.map((e) => ({ ...e, expanded: false, loaded: false })));
+        setError(null);
+      })
+      .catch((e) => {
+        if (!cancelled) setError(String(e));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [rootDir]);
 
   // 点击别处关闭菜单
   useEffect(() => {
