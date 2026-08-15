@@ -3,7 +3,6 @@
  * 用该符号包裹选区而不是替换它。Typora 行为。
  */
 import { $prose } from "@milkdown/utils";
-import { Plugin, PluginKey } from "@milkdown/prose/state";
 import { keymap } from "@milkdown/prose/keymap";
 import type { EditorState, Transaction } from "@milkdown/prose/state";
 

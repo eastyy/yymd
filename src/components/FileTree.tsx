@@ -33,7 +33,9 @@ export default function FileTree() {
   const [error, setError] = useState<string | null>(null);
   const [menu, setMenu] = useState<MenuState | null>(null);
   const rootDirRef = useRef(rootDir);
-  rootDirRef.current = rootDir;
+  useEffect(() => {
+    rootDirRef.current = rootDir;
+  }, [rootDir]);
 
   const loadRoot = useCallback(async (dir: string) => {
     try {

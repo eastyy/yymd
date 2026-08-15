@@ -39,16 +39,28 @@ fn register_default_markdown_handler() {
     type CFStringRef = *const std::ffi::c_void;
     #[link(name = "CoreFoundation", kind = "framework")]
     extern "C" {
-        fn CFStringCreateWithCString(alloc: *const std::ffi::c_void, c: *const i8, encoding: u32) -> CFStringRef;
+        fn CFStringCreateWithCString(
+            alloc: *const std::ffi::c_void,
+            c: *const i8,
+            encoding: u32,
+        ) -> CFStringRef;
         fn CFRelease(cf: CFStringRef);
     }
     #[link(name = "CoreServices", kind = "framework")]
     extern "C" {
-        fn LSSetDefaultRoleHandlerForContentType(ct: CFStringRef, role: u32, bundle: CFStringRef) -> i32;
+        fn LSSetDefaultRoleHandlerForContentType(
+            ct: CFStringRef,
+            role: u32,
+            bundle: CFStringRef,
+        ) -> i32;
     }
     unsafe {
         let utf8 = 0x0800_0100u32;
-        let ct = CFStringCreateWithCString(std::ptr::null(), c"net.daringfireball.markdown".as_ptr(), utf8);
+        let ct = CFStringCreateWithCString(
+            std::ptr::null(),
+            c"net.daringfireball.markdown".as_ptr(),
+            utf8,
+        );
         let bid = CFStringCreateWithCString(std::ptr::null(), c"com.yymd.app".as_ptr(), utf8);
         if !ct.is_null() && !bid.is_null() {
             let _ = LSSetDefaultRoleHandlerForContentType(ct, 0xFFFF_FFFF, bid);
@@ -158,7 +170,16 @@ fn list_files_recursive(dir: String, limit: usize) -> Result<Vec<FileEntry>, Str
     if !root.exists() {
         return Ok(out);
     }
-    let skip = [".git", "node_modules", "target", "dist", ".vscode", ".idea", ".obsidian", "yymd-assets"];
+    let skip = [
+        ".git",
+        "node_modules",
+        "target",
+        "dist",
+        ".vscode",
+        ".idea",
+        ".obsidian",
+        "yymd-assets",
+    ];
     let mut stack = vec![root.to_path_buf()];
     while let Some(d) = stack.pop() {
         let entries = match fs::read_dir(&d) {
@@ -178,7 +199,10 @@ fn list_files_recursive(dir: String, limit: usize) -> Result<Vec<FileEntry>, Str
                 }
             } else {
                 let lower = name.to_lowercase();
-                if lower.ends_with(".md") || lower.ends_with(".markdown") || lower.ends_with(".mdown") {
+                if lower.ends_with(".md")
+                    || lower.ends_with(".markdown")
+                    || lower.ends_with(".mdown")
+                {
                     out.push(FileEntry {
                         name,
                         path: path.to_string_lossy().to_string(),
@@ -277,15 +301,31 @@ fn build_menu(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> 
     let new_i = MenuItem::with_id(app, "file.new", "新建", true, Some("CmdOrCtrl+N"))?;
     let open_i = MenuItem::with_id(app, "file.open", "打开…", true, Some("CmdOrCtrl+O"))?;
     let save_i = MenuItem::with_id(app, "file.save", "保存", true, Some("CmdOrCtrl+S"))?;
-    let save_as_i = MenuItem::with_id(app, "file.save_as", "另存为…", true, Some("Shift+CmdOrCtrl+S"))?;
-    let export_html_i = MenuItem::with_id(app, "file.export_html", "导出为 HTML", true, None::<&str>)?;
-    let export_pdf_i = MenuItem::with_id(app, "file.export_pdf", "导出为 PDF…", true, None::<&str>)?;
+    let save_as_i = MenuItem::with_id(
+        app,
+        "file.save_as",
+        "另存为…",
+        true,
+        Some("Shift+CmdOrCtrl+S"),
+    )?;
+    let export_html_i =
+        MenuItem::with_id(app, "file.export_html", "导出为 HTML", true, None::<&str>)?;
+    let export_pdf_i =
+        MenuItem::with_id(app, "file.export_pdf", "导出为 PDF…", true, None::<&str>)?;
     let quit_i = PredefinedMenuItem::quit(app, Some("退出"))?;
     let file_menu = Submenu::with_items(
         app,
         "文件",
         true,
-        &[&new_i, &open_i, &save_i, &save_as_i, &export_html_i, &export_pdf_i, &quit_i],
+        &[
+            &new_i,
+            &open_i,
+            &save_i,
+            &save_as_i,
+            &export_html_i,
+            &export_pdf_i,
+            &quit_i,
+        ],
     )?;
 
     let undo_i = PredefinedMenuItem::undo(app, Some("撤销"))?;
