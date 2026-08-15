@@ -25,9 +25,11 @@
 ```bash
 cd /Users/yy/yymd
 npm install                          # 依赖(已装好,一般不用)
+npm run lint                         # ESLint(CI 要求 0 error 0 warning)
 npx tsc --noEmit                     # TS 类型检查,必须零错误
-npx vitest run                       # 单元测试(78 个,jsdom 环境)
+npx vitest run                       # 单元测试(82 个,jsdom 环境)
 cd src-tauri && cargo check          # Rust 检查
+cd src-tauri && cargo clippy --all-targets -- -D warnings && cargo fmt --check   # CI 门禁
 cd /Users/yy/yymd
 npm run tauri build -- --debug       # 完整桌面包构建(约 2–3 分钟增量)
 ```
@@ -118,7 +120,7 @@ tableToolbar → linkPlugin → listener。
 1. 小步提交:一个功能一个 commit,message 写清内容;docs 单独提交。
 2. 每个纯逻辑(解析/映射/搜索)都放 `src/lib/` 并配 `__tests__` 单测;
    交互逻辑用 Editor.make() + 打字模拟做集成测试。
-3. 改完必跑:§3 的四项验证全过才算完成;有一项红就不要提交。
+3. 改完必跑:§3 的验证(lint/typecheck/test/clippy/fmt)全过才算完成;有一项红就不要提交。
 4. 每完成一个功能更新 `STATUS.md` 对应小节和测试数。
 5. 构建前先 `pkill -f "Yymd"` 杀掉旧实例,否则产物被占用。
 6. 不确定的库 API,先读 `node_modules/@milkdown/*/lib/index.es.js` 源码再写。
